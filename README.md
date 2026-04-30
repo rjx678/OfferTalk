@@ -141,6 +141,9 @@ miniprogram-2/
 5. **社交功能** - 关注、粉丝、消息通知
 
 
-**GitHub仓库：** https://github.com/rjx678/offertalk 
-**在线演示：** 
-微信开发者工具导入前端项目，并且在IDEA启动后端服务，最后执行数据库脚本后即可运行（数据库密码不一致则需要修改）
+**GitHub仓库：** 
+https://github.com/rjx678/offertalk 
+
+**本地演示：** 
+首先需要申请微信小程序，拿到appId和appSecret，然后使用微信开发者工具导入前端项目，接着在IDEA启动后端java服务，最后执行数据库脚本后即可在微信小程序重现
+注：mysql数据库密码不一致则需要修改
