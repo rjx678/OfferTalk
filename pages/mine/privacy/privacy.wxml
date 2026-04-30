@@ -1,0 +1,41 @@
+<view class="container">
+  <custom-nav title="隐私设置" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <view class="section">
+      <view class="section-title">隐私</view>
+      <view class="settings-card">
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">🎭</text>
+            <text class="setting-label">匿名发布默认开启</text>
+          </view>
+          <switch checked="{{privacySettings.anonymousDefault}}" bindchange="onSettingChange" data-field="anonymousDefault" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">⭐</text>
+            <text class="setting-label">允许他人查看我的收藏</text>
+          </view>
+          <switch checked="{{privacySettings.showCollections}}" bindchange="onSettingChange" data-field="showCollections" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">📝</text>
+            <text class="setting-label">允许他人查看我的发布</text>
+          </view>
+          <switch checked="{{privacySettings.showPosts}}" bindchange="onSettingChange" data-field="showPosts" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item no-border">
+          <view class="setting-left">
+            <text class="setting-icon">🎯</text>
+            <text class="setting-label">个性化推荐</text>
+          </view>
+          <switch checked="{{privacySettings.personalizedRecommend}}" bindchange="onSettingChange" data-field="personalizedRecommend" color="#3366ff" />
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

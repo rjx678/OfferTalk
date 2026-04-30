@@ -1,0 +1,37 @@
+<view class="container">
+  <custom-nav title="我的发布" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <view class="empty-state" wx:if="{{!hasPosts}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-title">暂无发布内容</text>
+      <text class="empty-desc">快去分享你的求职经验吧</text>
+      <view class="empty-btn" bindtap="goPublish">去发布</view>
+    </view>
+
+    <view class="post-list" wx:else>
+      <view class="post-item" wx:for="{{postList}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}" data-type="{{item.type}}">
+        <view class="post-header">
+          <view class="post-type" wx:if="{{item.typeName}}">{{item.typeName}}</view>
+          <text class="post-time">{{item.createTime}}</text>
+        </view>
+        <text class="post-title">{{item.title}}</text>
+        <text class="post-content">{{item.content}}</text>
+        <view class="post-footer">
+          <view class="footer-item">
+            <text class="footer-icon">👁</text>
+            <text class="footer-text">{{item.viewCount || 0}}</text>
+          </view>
+          <view class="footer-item">
+            <text class="footer-icon">💬</text>
+            <text class="footer-text">{{item.commentCount || 0}}</text>
+          </view>
+          <view class="footer-item">
+            <text class="footer-icon">👍</text>
+            <text class="footer-text">{{item.likeCount || 0}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,193 @@
+<view class="container">
+  <custom-nav title="公司对比" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <!-- 已选公司 -->
+    <view class="selected-section">
+      <view class="section-title">已选公司（{{selectedCompanies.length}}/3）</view>
+      <view class="selected-list">
+        <view class="selected-item" wx:for="{{selectedCompanies}}" wx:key="companyId">
+          <image class="company-logo" src="{{item.logoUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+          <view class="company-info">
+            <text class="company-name">{{item.companyName}}</text>
+            <text class="company-tags">{{item.tags ? item.tags.join(' · ') : ''}}</text>
+          </view>
+          <view class="remove-btn" bindtap="removeCompany" data-id="{{item.companyId}}">×</view>
+        </view>
+        <view class="add-btn" wx:if="{{selectedCompanies.length < 3 && companyList.length > 0}}" bindtap="addCompany">
+          <picker mode="selector" range="{{companyList}}" range-key="companyName" bindchange="onCompanyPickerChange">
+            <view class="picker-trigger">
+              <text class="add-icon">+</text>
+              <text class="add-text">添加公司</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- 公司列表提示 -->
+    <view class="company-tip" wx:if="{{companyList.length === 0}}">
+      <text>正在加载公司列表...</text>
+    </view>
+
+    <!-- 权重设置 -->
+    <view class="section">
+      <view class="section-title">对比维度权重</view>
+      <view class="weight-list">
+        <view class="weight-item">
+          <text class="weight-label">薪资待遇</text>
+          <slider class="weight-slider" min="0" max="10" step="1"
+                  value="{{weights.salaryWeight * 10}}"
+                  bindchange="onWeightChange" data-field="salaryWeight" />
+          <text class="weight-value">{{weightPercent.salaryWeight}}%</text>
+        </view>
+        <view class="weight-item">
+          <text class="weight-label">企业文化</text>
+          <slider class="weight-slider" min="0" max="10" step="1"
+                  value="{{weights.cultureWeight * 10}}"
+                  bindchange="onWeightChange" data-field="cultureWeight" />
+          <text class="weight-value">{{weightPercent.cultureWeight}}%</text>
+        </view>
+        <view class="weight-item">
+          <text class="weight-label">工作生活</text>
+          <slider class="weight-slider" min="0" max="10" step="1"
+                  value="{{weights.workLifeWeight * 10}}"
+                  bindchange="onWeightChange" data-field="workLifeWeight" />
+          <text class="weight-value">{{weightPercent.workLifeWeight}}%</text>
+        </view>
+        <view class="weight-item">
+          <text class="weight-label">发展前景</text>
+          <slider class="weight-slider" min="0" max="10" step="1"
+                  value="{{weights.developmentWeight * 10}}"
+                  bindchange="onWeightChange" data-field="developmentWeight" />
+          <text class="weight-value">{{weightPercent.developmentWeight}}%</text>
+        </view>
+        <view class="weight-item">
+          <text class="weight-label">福利待遇</text>
+          <slider class="weight-slider" min="0" max="10" step="1"
+                  value="{{weights.welfareWeight * 10}}"
+                  bindchange="onWeightChange" data-field="welfareWeight" />
+          <text class="weight-value">{{weightPercent.welfareWeight}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 对比按钮 -->
+    <view class="compare-btn" bindtap="compare" wx:if="{{selectedCompanies.length >= 2}}">开始对比</view>
+
+    <!-- 对比结果 -->
+    <view class="result-section" wx:if="{{compareResult}}">
+      <view class="section-title">对比结果</view>
+
+      <!-- 综合评分 -->
+      <view class="summary-card">
+        <view class="summary-header">综合评分</view>
+        <view class="summary-list">
+          <view class="summary-item" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <image class="summary-logo" src="{{item.logoUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+            <view class="summary-info">
+              <text class="summary-name">{{item.companyName}}</text>
+              <text class="summary-score">{{item.overallScore}}分</text>
+            </view>
+            <view class="summary-badge" wx:if="{{item.companyId === compareResult.bestCompanyId}}">最优</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 详细对比表格 -->
+      <view class="compare-table">
+        <view class="table-header">
+          <view class="table-cell label-cell">维度</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            {{item.companyName}}
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">薪资评分</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{item.salaryScore * 20}}%"></view>
+              <text class="score-text">{{item.salaryScore}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">文化评分</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{item.cultureScore * 20}}%"></view>
+              <text class="score-text">{{item.cultureScore}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">工作生活</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{item.workLifeScore * 20}}%"></view>
+              <text class="score-text">{{item.workLifeScore}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">发展前景</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{item.developmentScore * 20}}%"></view>
+              <text class="score-text">{{item.developmentScore}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">福利待遇</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            <view class="score-bar">
+              <view class="score-fill" style="width: {{item.welfareScore * 20}}%"></view>
+              <text class="score-text">{{item.welfareScore}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">薪资范围</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            {{item.salaryRange}}
+          </view>
+        </view>
+        <view class="table-row">
+          <view class="table-cell label-cell">年终奖</view>
+          <view class="table-cell" wx:for="{{compareResult.items}}" wx:key="companyId">
+            ¥{{formatNumber(item.avgAnnualBonus)}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 公司详情卡片 -->
+      <view class="detail-cards">
+        <view class="detail-card" wx:for="{{compareResult.items}}" wx:key="companyId">
+          <view class="card-header">
+            <image class="card-logo" src="{{item.logoUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+            <view class="card-info">
+              <text class="card-name">{{item.companyName}}</text>
+              <text class="card-industry">{{item.industry}} · {{item.stage}}</text>
+            </view>
+          </view>
+          <view class="card-content">
+            <view class="pros-cons">
+              <text class="pros-label">优点：</text>
+              <text class="pros-text">{{item.prosSummary}}</text>
+            </view>
+            <view class="pros-cons">
+              <text class="cons-label">缺点：</text>
+              <text class="cons-text">{{item.consSummary}}</text>
+            </view>
+          </view>
+          <view class="card-footer">
+            <text class="review-count">共{{item.reviewCount}}条评价</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

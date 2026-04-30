@@ -1,0 +1,54 @@
+/* 全局标题栏样式 - 统一所有页面的标题栏设计 */
+
+/* 容器基础样式 */
+.page-container {
+  min-height: 100vh;
+  background-color: #f5f5f8;
+  padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
+}
+
+/* 内容区域样式 - 统一间距 */
+.page-content {
+  padding-top: 48rpx;
+  box-sizing: border-box;
+}
+
+/* 卡片容器样式 */
+.page-card {
+  background: #ffffff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 蓝色背景标题栏 */
+.blue-header {
+  background: linear-gradient(135deg, #3366ff 0%, #5588ff 100%);
+  color: #ffffff;
+  position: relative;
+  z-index: 100;
+}
+
+/* 响应式适配 */
+@media screen and (min-width: 375px) {
+  .page-content {
+    padding-top: 52rpx;
+  }
+}
+
+@media screen and (min-width: 414px) {
+  .page-content {
+    padding-top: 56rpx;
+  }
+}
+
+/* iPhone X/XR/XS 刘海屏适配 */
+@media screen and (device-width: 375px) and (device-height: 812px),
+       screen and (device-width: 414px) and (device-height: 896px),
+       screen and (device-width: 390px) and (device-height: 844px),
+       screen and (device-width: 428px) and (device-height: 926px) {
+  .page-container {
+    padding-top: 0;
+  }
+}

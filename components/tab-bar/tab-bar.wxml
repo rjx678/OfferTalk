@@ -1,0 +1,12 @@
+<view class="tab-bar">
+  <view 
+    class="tab-item {{current === item.id ? 'active' : ''}}" 
+    wx:for="{{tabs}}" 
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="onTabTap"
+  >
+    <text class="icon">{{item.id === 0 ? (current === 0 ? '🏠' : '🏡') : item.id === 1 ? (current === 1 ? '🏢' : '🏬') : item.id === 2 ? (current === 2 ? '✏️' : '📝') : (current === 3 ? '👤' : '👥')}}</text>
+    <text class="label">{{item.label}}</text>
+  </view>
+</view>

@@ -1,0 +1,104 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-top: env(safe-area-inset-top);
+}
+
+.content-scroll {
+  height: calc(100vh - 88rpx - env(safe-area-inset-top));
+  padding-top: 0;
+}
+
+.section {
+  margin: 20rpx;
+}
+
+.section-title {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+.settings-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item.no-border {
+  border-bottom: none;
+}
+
+.setting-item.switch-item {
+  padding: 20rpx 32rpx;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.avatar-wrapper {
+  margin-right: 24rpx;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  background-color: #f0f0f0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.user-bio {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.setting-label {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.setting-arrow {
+  font-size: 32rpx;
+  color: #cccccc;
+  margin-left: 16rpx;
+}
+
+.version-info {
+  display: flex;
+  align-items: center;
+}
+
+.version-text {
+  font-size: 24rpx;
+  color: #999999;
+  margin-right: 8rpx;
+}
+
+.bottom-space {
+  height: 100rpx;
+}

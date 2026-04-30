@@ -1,0 +1,144 @@
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.comment-list {
+  height: calc(100vh - 120rpx - env(safe-area-inset-bottom));
+  padding: 48rpx 32rpx 20rpx;
+}
+
+.comment-item {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.comment-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  background: #f5f5f5;
+}
+
+.comment-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.comment-author {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333333;
+}
+
+.comment-time {
+  font-size: 20rpx;
+  color: #999999;
+}
+
+.comment-content {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24rpx;
+}
+
+.action-btn {
+  font-size: 22rpx;
+  color: #666666;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #f0f4ff;
+  color: #3366ff;
+}
+
+.no-comment {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999999;
+}
+
+.no-comment-text {
+  font-size: 28rpx;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.no-comment-hint {
+  font-size: 24rpx;
+  display: block;
+  color: #666666;
+}
+
+.comment-input-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1rpx solid #f0f0f0;
+  padding: 16rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.08);
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+
+.comment-input {
+  flex: 1;
+  height: 72rpx;
+  background: #f5f5f7;
+  border-radius: 36rpx;
+  padding: 0 32rpx;
+  font-size: 26rpx;
+  color: #333333;
+}
+
+.comment-input::placeholder {
+  color: #999999;
+}
+
+.submit-btn {
+  width: 120rpx;
+  height: 72rpx;
+  background: #3366ff;
+  color: #ffffff;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.submit-btn:active {
+  background: #2952cc;
+  transform: scale(0.96);
+}

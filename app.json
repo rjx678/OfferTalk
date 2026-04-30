@@ -1,0 +1,69 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/company/list",
+    "pages/company/detail/detail",
+    "pages/content/interview/interview",
+    "pages/content/salary/salary",
+    "pages/content/review/review",
+    "pages/publish/index",
+    "pages/mine/index",
+    "pages/mine/posts/posts",
+    "pages/mine/collections/collections",
+    "pages/mine/comments/comments",
+    "pages/mine/likes/likes",
+    "pages/mine/profile/profile",
+    "pages/mine/privacy/privacy",
+    "pages/mine/notification/notification",
+    "pages/mine/about/about",
+    "pages/comment/index",
+    "pages/tools/salary-calculator/salary-calculator",
+    "pages/tools/company-compare/company-compare",
+    "pages/tools/career-path/career-path",
+    "pages/tools/feedback/feedback"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#3366ff",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/company/list",
+        "text": "公司"
+      },
+      {
+        "pagePath": "pages/publish/index",
+        "text": "发布"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "renderer": "skyline",
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "defaultContentBox": true,
+      "tagNameStyleIsolation": "legacy",
+      "disableABTest": true,
+      "sdkVersionBegin": "3.0.0",
+      "sdkVersionEnd": "15.255.255"
+    }
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

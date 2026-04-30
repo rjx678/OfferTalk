@@ -1,0 +1,230 @@
+<view class="container">
+  <custom-nav title="薪资爆料" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll" enhanced="true" show-scrollbar="false" wx:if="{{salary}}" bindscroll="onScroll" scroll-into-view="{{scrollToView}}" scroll-with-animation="true">
+    <view id="top"></view>
+
+    <view class="salary-header">
+      <text class="salary-title">{{salary.title}}</text>
+      <view class="company-info" bindtap="toCompanyDetail" data-id="{{salary.companyId}}">
+        <text class="company-name">{{salary.companyName}}</text>
+        <text class="company-stage">{{salary.companyStage || ''}}</text>
+      </view>
+      <view class="salary-package">
+        <text class="package-value">{{salary.formattedSalary || '0'}}</text>
+        <text class="package-unit">万/年</text>
+      </view>
+      <view class="salary-tags">
+        <text class="tag">{{salary.recruitType === 1 ? '校招' : salary.recruitType === 2 ? '社招' : '实习'}}</text>
+        <text class="tag">{{salary.city}}</text>
+        <text class="tag" wx:if="{{salary.level}}">{{salary.level}}</text>
+      </view>
+    </view>
+
+    <view class="salary-section">
+      <view class="section-header">
+        <text class="section-title">基本信息</text>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">岗位</text>
+          <text class="info-value">{{salary.jobCategory}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">城市</text>
+          <text class="info-value">{{salary.city}}</text>
+        </view>
+        <view class="info-item" wx:if="{{salary.level}}">
+          <text class="info-label">职级</text>
+          <text class="info-value">{{salary.level}}</text>
+        </view>
+        <view class="info-item" wx:if="{{salary.workingYears}}">
+          <text class="info-label">工作年限</text>
+          <text class="info-value">{{salary.workingYears}}年</text>
+        </view>
+        <view class="info-item" wx:if="{{salary.education}}">
+          <text class="info-label">学历</text>
+          <text class="info-value">{{salary.education}}</text>
+        </view>
+        <view class="info-item" wx:if="{{salary.entryDate}}">
+          <text class="info-label">入职时间</text>
+          <text class="info-value">{{salary.entryDate}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="salary-section">
+      <view class="section-header">
+        <text class="section-title">薪资构成</text>
+      </view>
+      <view class="salary-breakdown">
+        <view class="salary-item">
+          <view class="salary-item-header">
+            <text class="salary-item-label">月薪</text>
+            <text class="salary-item-value">{{salary.monthlyBase || '-'}}元</text>
+          </view>
+        </view>
+        <view class="salary-item">
+          <view class="salary-item-header">
+            <text class="salary-item-label">年度基本工资</text>
+            <text class="salary-item-value">{{salary.annualBase || '-'}}元</text>
+          </view>
+        </view>
+        <view class="salary-item">
+          <view class="salary-item-header">
+            <text class="salary-item-label">签约奖金</text>
+            <text class="salary-item-value">{{salary.signingBonus || '-'}}元</text>
+          </view>
+        </view>
+        <view class="salary-item">
+          <view class="salary-item-header">
+            <text class="salary-item-label">年终奖</text>
+            <text class="salary-item-value">{{salary.annualBonus || '-'}}个月</text>
+          </view>
+        </view>
+        <view class="salary-item" wx:if="{{salary.stockOptions}}">
+          <view class="salary-item-header">
+            <text class="salary-item-label">股票期权</text>
+            <text class="salary-item-value">{{salary.stockOptions}}</text>
+          </view>
+        </view>
+        <view class="salary-item" wx:if="{{salary.stockValue}}">
+          <view class="salary-item-header">
+            <text class="salary-item-label">股票价值</text>
+            <text class="salary-item-value">{{salary.stockValue}}元</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="salary-section">
+      <view class="section-header">
+        <text class="section-title">福利补贴</text>
+      </view>
+      <view class="benefits-grid">
+        <view class="benefit-item" wx:if="{{salary.mealAllowance}}">
+          <text class="benefit-icon">🍽️</text>
+          <text class="benefit-label">餐补</text>
+          <text class="benefit-value">{{salary.mealAllowance}}元/月</text>
+        </view>
+        <view class="benefit-item" wx:if="{{salary.housingAllowance}}">
+          <text class="benefit-icon">🏠</text>
+          <text class="benefit-label">房补</text>
+          <text class="benefit-value">{{salary.housingAllowance}}元/月</text>
+        </view>
+        <view class="benefit-item" wx:if="{{salary.transportAllowance}}">
+          <text class="benefit-icon">🚗</text>
+          <text class="benefit-label">交通补贴</text>
+          <text class="benefit-value">{{salary.transportAllowance}}元/月</text>
+        </view>
+        <view class="benefit-item" wx:if="{{salary.socialInsuranceRatio}}">
+          <text class="benefit-icon">🛡️</text>
+          <text class="benefit-label">社保比例</text>
+          <text class="benefit-value">{{salary.socialInsuranceRatio}}</text>
+        </view>
+        <view class="benefit-item" wx:if="{{salary.housingFundRatio}}">
+          <text class="benefit-icon">🏦</text>
+          <text class="benefit-label">公积金比例</text>
+          <text class="benefit-value">{{salary.housingFundRatio}}</text>
+        </view>
+        <view class="benefit-item" wx:if="{{salary.otherBenefits}}">
+          <text class="benefit-icon">🎁</text>
+          <text class="benefit-label">其他福利</text>
+          <text class="benefit-value">{{salary.otherBenefits}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="salary-section" wx:if="{{salary.overtimeSituation || salary.addText || salary.probationPeriod}}">
+      <view class="section-header">
+        <text class="section-title">补充信息</text>
+      </view>
+      <view class="additional-info">
+        <view class="info-card" wx:if="{{salary.overtimeSituation}}">
+          <view class="info-header">
+            <text class="info-icon">⏰</text>
+            <text class="info-label">加班情况</text>
+          </view>
+          <text class="info-text">{{salary.overtimeSituation}}</text>
+        </view>
+        <view class="info-card" wx:if="{{salary.probationPeriod}}">
+          <view class="info-header">
+            <text class="info-icon">📋</text>
+            <text class="info-label">试用期</text>
+          </view>
+          <text class="info-text">{{salary.probationPeriod}}</text>
+        </view>
+        <view class="info-card" wx:if="{{salary.addText}}">
+          <view class="info-header">
+            <text class="info-icon">💡</text>
+            <text class="info-label">补充说明</text>
+          </view>
+          <text class="info-text">{{salary.addText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="article-footer">
+      <view class="author-info">
+        <text class="author-name">{{salary.isAnonymous ? '匿名用户' : '用户' + salary.userId}}</text>
+        <text class="post-time">{{salary.createTime}}</text>
+      </view>
+      <view class="truth-badge">
+        <text class="badge-label">真实度</text>
+        <text class="badge-value">{{salary.truthScore}}</text>
+      </view>
+    </view>
+
+    <view class="disclaimer-bottom">
+      <text>声明：内容仅供参考，具体情况以实际为准。</text>
+    </view>
+
+    <view class="bottom-spacer" id="bottom-spacer"></view>
+
+    <view class="comment-section" id="comment-section">
+      <view class="section-header">
+        <text class="section-title">评论</text>
+        <text class="section-count">{{comments.length}}</text>
+      </view>
+      <view class="comment-list">
+        <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+          <view class="comment-header">
+            <text class="comment-author">{{item.isAnonymous ? '匿名' : '用户' + item.userId}}</text>
+            <text class="comment-time">{{item.createTime}}</text>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+          <view class="comment-actions">
+            <text class="action-item" bindtap="handleCommentLike" data-id="{{item.id}}">👍 {{item.likeCount || 0}}</text>
+          </view>
+        </view>
+        <view class="no-comments" wx:if="{{comments.length === 0}}">
+          <text class="no-comments-text">暂无评论，快来发表你的看法吧！</text>
+        </view>
+      </view>
+      <view class="comment-input-area">
+        <input class="comment-input" placeholder="写下你的评论..." bindinput="onCommentInput" value="{{commentContent}}" />
+        <button class="comment-submit" bindtap="handleSubmitComment" disabled="{{!commentContent}}">发送</button>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="action-bar">
+    <view class="action-item {{isLiked ? 'active' : ''}}" bindtap="handleLike">
+      <text class="action-icon">{{isLiked ? '👍' : '🤍'}}</text>
+      <text class="action-text">{{salary ? salary.likeCount || 0 : 0}}</text>
+    </view>
+    <view class="action-item {{isCollected ? 'active' : ''}}" bindtap="handleCollect">
+      <text class="action-icon">{{isCollected ? '⭐' : '☆'}}</text>
+      <text class="action-text">收藏</text>
+    </view>
+    <view class="action-item" bindtap="handleShare">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+  </view>
+
+  <view class="quick-nav {{showQuickNav ? 'show' : ''}}" bindtap="scrollToComment">
+    <text class="quick-nav-icon">💬</text>
+    <text class="quick-nav-text">直达评论</text>
+  </view>
+</view>

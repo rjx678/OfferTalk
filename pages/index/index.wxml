@@ -1,0 +1,115 @@
+<view class="container">
+  <custom-nav title="OfferTalk" back="{{false}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <view class="search-section">
+    <view class="search-box">
+      <icon type="search" size="16" color="#999"></icon>
+      <input class="search-input" placeholder="搜索公司、岗位、面经..." bindconfirm="onSearch" confirm-type="search" value="{{searchValue}}" />
+    </view>
+  </view>
+
+  <view class="category-nav">
+    <view class="category-item {{currentCategory == 'interview' ? 'active' : ''}}" bindtap="switchCategory" data-category="interview">
+      <text class="category-icon">💼</text>
+      <text class="category-text">面经</text>
+    </view>
+    <view class="category-item {{currentCategory == 'salary' ? 'active' : ''}}" bindtap="switchCategory" data-category="salary">
+      <text class="category-icon">💰</text>
+      <text class="category-text">薪资</text>
+    </view>
+    <view class="category-item {{currentCategory == 'review' ? 'active' : ''}}" bindtap="switchCategory" data-category="review">
+      <text class="category-icon">⭐</text>
+      <text class="category-text">评价</text>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <view class="filter-section">
+      <view class="filter-option {{currentSort == 'latest' ? 'active' : ''}}" bindtap="switchSort" data-sort="latest">最新</view>
+      <view class="filter-option {{currentSort == 'hot' ? 'active' : ''}}" bindtap="switchSort" data-sort="hot">热门</view>
+      <view class="filter-option {{currentSort == 'truth' ? 'active' : ''}}" bindtap="switchSort" data-sort="truth">真实度</view>
+    </view>
+    <view class="divider"></view>
+    <view class="filter-section">
+      <view class="filter-option {{currentRecruit == '1' ? 'active' : ''}}" bindtap="switchRecruit" data-recruit="1">校招</view>
+      <view class="filter-option {{currentRecruit == '2' ? 'active' : ''}}" bindtap="switchRecruit" data-recruit="2">社招</view>
+      <view class="filter-option {{currentRecruit == '3' ? 'active' : ''}}" bindtap="switchRecruit" data-recruit="3">实习</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="content-list" type="list" bindscrolltolower="loadMore" enhanced show-scrollbar="false">
+    <view class="content-card" wx:for="{{contents}}" wx:key="id" bindtap="toDetail" data-id="{{item.id}}" data-type="{{item.type}}">
+      <view class="card-header">
+        <view class="company-info">
+          <image class="company-logo" src="{{item.companyLogo}}" mode="aspectFill" />
+          <view class="company-text">
+            <text class="company-name">{{item.companyName}}</text>
+            <text class="job-title">{{item.jobTitle}}</text>
+          </view>
+        </view>
+        <view class="type-badge type-{{item.type}}">{{item.typeName}}</view>
+      </view>
+
+      <view class="card-title">{{item.title}}</view>
+
+      <view class="card-content" wx:if="{{item.type === 'interview'}}">
+        <text class="content-preview">{{item.contentPreview}}</text>
+        <view class="interview-meta">
+          <text class="meta-item">{{item.city}}</text>
+          <text class="meta-item" wx:if="{{item.workExperience}}">{{item.workExperience}}</text>
+          <text class="meta-item">{{item.status}}</text>
+        </view>
+      </view>
+
+      <view class="card-content" wx:if="{{item.type === 'salary'}}">
+        <view class="salary-info">
+          <text class="salary-value">{{item.totalPackage}}万</text>
+          <text class="salary-unit">/年</text>
+        </view>
+        <view class="salary-meta">
+          <text class="meta-item">{{item.city}}</text>
+          <text class="meta-item">{{item.level}}</text>
+        </view>
+      </view>
+
+      <view class="card-content" wx:if="{{item.type === 'review'}}">
+        <text class="content-preview">{{item.contentPreview}}</text>
+        <view class="review-meta">
+          <text class="meta-item rating">评分: {{item.rating}}</text>
+          <text class="meta-item">{{item.recruitType}}</text>
+        </view>
+      </view>
+
+      <view class="card-footer">
+        <view class="truth-score">
+          <text class="score-label">真实度</text>
+          <text class="score-value">{{item.truthScore}}</text>
+        </view>
+        <view class="stats">
+          <text class="stat-item">👀 {{item.viewCount}}</text>
+          <text class="stat-item">👍 {{item.likeCount}}</text>
+          <text class="stat-item">💬 {{item.commentCount}}</text>
+        </view>
+        <text class="time">{{item.createTime}}</text>
+      </view>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore && contents.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+    <view class="empty" wx:if="{{contents.length === 0 && !loading}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无内容</text>
+      <text class="empty-hint">快来发布第一篇内容吧</text>
+    </view>
+  </scroll-view>
+
+  <view class="disclaimer">
+    <text class="disclaimer-text">所有面经、薪资、公司评价均为用户自主分享与网络公开整理，仅作求职参考，不构成任何就业、择业建议；</text>
+  </view>
+
+  <tab-bar current="{{tabBarCurrent}}" />
+</view>

@@ -1,0 +1,139 @@
+<view class="container">
+  <custom-nav title="我的" back="{{false}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll" style="height: calc(100vh - 100rpx);">
+  <view class="user-section">
+    <view class="user-card" wx:if="{{hasLogin && userInfo}}">
+      <image class="user-avatar" src="{{displayAvatarUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+      <view class="user-info">
+        <text class="user-nickname">{{userInfo.nickname || '用户' + userInfo.id}}</text>
+        <text class="user-bio">{{userInfo.bio || '保持热爱，奔赴山海'}}</text>
+      </view>
+      <view class="user-badge">
+        <text class="badge-icon">🏆</text>
+      </view>
+    </view>
+
+    <view class="login-card" wx:if="{{!hasLogin}}" bindtap="doLogin">
+      <image class="login-avatar" src="/images/default-avatar.png" mode="aspectFill" />
+      <text class="login-text">点击登录，体验更多功能</text>
+      <text class="login-subtext">登录后可发布内容、收藏信息</text>
+    </view>
+  </view>
+
+  <view class="content-section">
+    <view class="section-header">
+      <text class="section-title">我的内容</text>
+    </view>
+    <view class="content-grid">
+      <view class="content-card" bindtap="navigateToMyPosts">
+        <view class="card-icon">📝</view>
+        <view class="card-info">
+          <text class="card-name">我的发布</text>
+          <text class="card-count" wx:if="{{userInfo && userInfo.totalPostCount > 0}}">{{userInfo && userInfo.totalPostCount}}条</text>
+        </view>
+      </view>
+      <view class="content-card" bindtap="navigateToMyCollects">
+        <view class="card-icon">⭐</view>
+        <view class="card-info">
+          <text class="card-name">我的收藏</text>
+          <text class="card-count" wx:if="{{userInfo && userInfo.totalCollectCount > 0}}">{{userInfo && userInfo.totalCollectCount}}条</text>
+        </view>
+      </view>
+      <view class="content-card" bindtap="navigateToMyComments">
+        <view class="card-icon">💬</view>
+        <view class="card-info">
+          <text class="card-name">我的评论</text>
+          <text class="card-count" wx:if="{{userInfo && userInfo.totalCommentCount > 0}}">{{userInfo && userInfo.totalCommentCount}}条</text>
+        </view>
+      </view>
+      <view class="content-card" bindtap="navigateToMyLikes">
+        <view class="card-icon">👍</view>
+        <view class="card-info">
+          <text class="card-name">我的点赞</text>
+          <text class="card-count" wx:if="{{userInfo && userInfo.totalLikeCount > 0}}">{{userInfo && userInfo.totalLikeCount}}条</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-section">
+    <view class="section-header">
+      <text class="section-title">实用工具</text>
+    </view>
+    <view class="action-grid">
+      <view class="action-card" bindtap="navigateToSalaryCalculator">
+        <view class="action-icon">💰</view>
+        <text class="action-name">薪资计算器</text>
+      </view>
+      <view class="action-card" bindtap="navigateToCompanyCompare">
+        <view class="action-icon">📊</view>
+        <text class="action-name">公司对比</text>
+      </view>
+      <view class="action-card" bindtap="navigateToCareerPath">
+        <view class="action-icon">🚀</view>
+        <text class="action-name">职业路径</text>
+      </view>
+      <view class="action-card" bindtap="navigateToFeedback">
+        <view class="action-icon">💡</view>
+        <text class="action-name">意见反馈</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-section">
+    <view class="section-header">
+      <text class="section-title">设置</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item" bindtap="navigateToProfile">
+        <view class="setting-left">
+          <text class="setting-icon">👤</text>
+          <text class="setting-name">个人资料</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="navigateToPrivacy">
+        <view class="setting-left">
+          <text class="setting-icon">🔒</text>
+          <text class="setting-name">隐私设置</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="navigateToNotification">
+        <view class="setting-left">
+          <text class="setting-icon">🔔</text>
+          <text class="setting-name">通知设置</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="navigateToAbout">
+        <view class="setting-left">
+          <text class="setting-icon">ℹ️</text>
+          <text class="setting-name">关于我们</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="doLogout" wx:if="{{hasLogin}}">
+        <view class="setting-left">
+          <text class="setting-icon">🚪</text>
+          <text class="setting-name">退出登录</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="app-footer">
+    <view class="app-info">
+      <text class="app-name">OfferTalk</text>
+      <text class="app-version">v1.0.0</text>
+    </view>
+    <view class="disclaimer">
+      <text>仅作求职参考，不构成任何建议</text>
+    </view>
+  </view>
+  </scroll-view>
+
+  <tab-bar current="{{tabBarCurrent}}" />
+</view>

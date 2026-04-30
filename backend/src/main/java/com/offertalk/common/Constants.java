@@ -1,0 +1,68 @@
+package com.offertalk.common;
+
+public interface Constants {
+
+    int CONTENT_TYPE_INTERVIEW = 1;
+    int CONTENT_TYPE_SALARY = 2;
+    int CONTENT_TYPE_REVIEW = 3;
+    int CONTENT_TYPE_COMMENT = 4;
+
+    int RECRUIT_TYPE_CAMPUS = 1;
+    int RECRUIT_TYPE_SOCIAL = 2;
+    int RECRUIT_TYPE_INTERN = 3;
+
+    int AUDIT_STATUS_PENDING = 0;
+    int AUDIT_STATUS_PASS = 1;
+    int AUDIT_STATUS_REJECT = 2;
+    int AUDIT_STATUS_MANUAL_REVIEW = 3;
+
+    int USER_STATUS_NORMAL = 1;
+    int USER_STATUS_DISABLED = 0;
+
+    int USER_TYPE_NORMAL = 1;
+    int USER_TYPE_CERTIFIED = 2;
+    int USER_TYPE_ADMIN = 3;
+
+    int LIKE_STATUS_ACTIVE = 1;
+    int LIKE_STATUS_CANCELLED = 0;
+
+    int COLLECT_STATUS_ACTIVE = 1;
+    int COLLECT_STATUS_CANCELLED = 0;
+
+    int REPORT_STATUS_PENDING = 0;
+    int REPORT_STATUS_HANDLED = 1;
+    int REPORT_STATUS_FALSE = 2;
+    int REPORT_STATUS_MALICIOUS = 3;
+
+    int REPORT_TYPE_FALSE_INFO = 1;
+    int REPORT_TYPE_AD = 2;
+    int REPORT_TYPE_ATTACK = 3;
+    int REPORT_TYPE_SENSITIVE = 4;
+    int REPORT_TYPE_OTHER = 5;
+
+    int SENSITIVE_LEVEL_WARN = 1;
+    int SENSITIVE_LEVEL_REPLACE = 2;
+    int SENSITIVE_LEVEL_BLOCK = 3;
+
+    String SORT_BY_NEW = "new";
+    String SORT_BY_HOT = "hot";
+    String SORT_BY_SALARY = "salary";
+    String SORT_BY_TRUTH = "truth";
+
+    int FEEDBACK_TYPE_SUGGESTION = 1;
+    int FEEDBACK_TYPE_BUG = 2;
+    int FEEDBACK_TYPE_CORRECTION = 3;
+    int FEEDBACK_TYPE_COMPLAINT = 4;
+
+    int NOTIFICATION_TYPE_SYSTEM = 1;
+    int NOTIFICATION_TYPE_AUDIT = 2;
+    int NOTIFICATION_TYPE_INTERACTION = 3;
+
+    int STATUS_ENABLED = 1;
+    int STATUS_DISABLED = 0;
+
+    int DELETED_NO = 0;
+    int DELETED_YES = 1;
+
+    long ANONYMOUS_USER_ID = 0;
+}

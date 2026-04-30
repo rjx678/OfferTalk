@@ -1,0 +1,31 @@
+{
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false,
+    "minifyWXML": true
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [{"value":"deploy","type":"folder"},
+    {"value":"backend","type":"folder"},
+    {"value":"prompt","type":"folder"},
+    {"value":"sql","type":"folder"},
+    {"value":"admin-backend","type":"folder"},
+    {"value":"admin-frontend","type":"folder"}
+  ],
+    "include": []
+  },
+  "appid": "wx9893f44dfa1e4d00",
+  "editorSetting": {}
+}

@@ -1,0 +1,207 @@
+<view class="container">
+  <custom-nav title="发布内容" back="{{false}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <view class="publish-types">
+    <view wx:for="{{types}}" wx:key="id" class="type-item {{publishType === item.id ? 'active' : ''}}" bindtap="switchType" data-id="{{item.id}}">
+      <text class="type-icon">{{item.id === 1 ? '💼' : item.id === 2 ? '💰' : '⭐'}}</text>
+      <text class="type-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="form-scroll">
+    <view class="form-card">
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">基本信息</text>
+          <text class="section-required">*为必填项</text>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label required">公司名称</text>
+          <picker mode="selector" range="{{companies}}" range-key="name" bindchange="selectCompany">
+            <view class="picker-box">
+              <text class="{{selectedCompany ? 'picker-value' : 'picker-placeholder'}}">
+                {{selectedCompany ? selectedCompany.name : '请选择公司'}}
+              </text>
+              <text class="picker-arrow">›</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label required">招聘类型</text>
+          <view class="type-pills">
+            <view wx:for="{{recruitTypes}}" wx:key="id" class="type-pill {{formData.recruitType === item.id ? 'active' : ''}}" bindtap="switchRecruitType" data-id="{{item.id}}">
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+
+        <view class="form-row">
+          <view class="form-item half">
+            <text class="form-label required">岗位类别</text>
+            <input class="form-input" placeholder="如：前端开发" data-field="jobCategory" bindinput="onInput" value="{{formData.jobCategory}}" />
+          </view>
+          <view class="form-item half">
+            <text class="form-label required">工作城市</text>
+            <input class="form-input" placeholder="如：北京" data-field="city" bindinput="onInput" value="{{formData.city}}" />
+          </view>
+        </view>
+
+        <view class="form-item" wx:if="{{formData.recruitType === 2}}">
+          <text class="form-label required">工作年限</text>
+          <input class="form-input" placeholder="如：5年" data-field="workExperience" bindinput="onInput" value="{{formData.workExperience}}" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label required">标题</text>
+          <input class="form-input" placeholder="请输入标题（至少5个字符）" data-field="title" bindinput="onInput" value="{{formData.title}}" />
+        </view>
+      </view>
+    </view>
+
+    <view class="form-card" wx:if="{{publishType === 1}}">
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">面试时间线</text>
+        </view>
+
+        <view class="timeline-list">
+          <view class="timeline-item" wx:for="{{timeline}}" wx:key="index">
+            <view class="timeline-header">
+              <text class="timeline-index">第{{index + 1}}轮</text>
+              <view class="timeline-delete" bindtap="removeTimelineItem" data-index="{{index}}">删除</view>
+            </view>
+            <input class="timeline-input" placeholder="阶段（如：一面、二面）" data-index="{{index}}" data-field="stage" bindinput="onTimelineChange" value="{{item.stage}}" />
+            <input class="timeline-input" placeholder="日期（如：2024.01.15）" data-index="{{index}}" data-field="date" bindinput="onTimelineChange" value="{{item.date}}" />
+            <input class="timeline-input" placeholder="结果（如：顺利通过）" data-index="{{index}}" data-field="result" bindinput="onTimelineChange" value="{{item.result}}" />
+          </view>
+          <view class="timeline-add" bindtap="addTimelineItem">
+            <text class="add-icon">+</text>
+            <text>添加面试环节</text>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label required">面试经验详情</text>
+          <textarea class="form-textarea large" placeholder="请详细描述面试过程、考察内容、算法题目等..." data-field="content" bindinput="onInput" value="{{formData.content}}"></textarea>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-card" wx:if="{{publishType === 2}}">
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">薪资信息</text>
+        </view>
+
+        <view class="form-row">
+          <view class="form-item half">
+            <text class="form-label">年度总包（万）</text>
+            <input class="form-input" type="digit" placeholder="如：45" data-field="totalPackage" bindinput="onSalaryInput" value="{{salaryData.totalPackage}}" />
+          </view>
+          <view class="form-item half">
+            <text class="form-label">月薪（元）</text>
+            <input class="form-input" type="number" placeholder="如：24000" data-field="monthlyBase" bindinput="onSalaryInput" value="{{salaryData.monthlyBase}}" />
+          </view>
+        </view>
+
+        <view class="form-row">
+          <view class="form-item half">
+            <text class="form-label">职级</text>
+            <input class="form-input" placeholder="如：P6、T3" data-field="level" bindinput="onSalaryInput" value="{{salaryData.level}}" />
+          </view>
+          <view class="form-item half">
+            <text class="form-label">加班情况</text>
+            <input class="form-input" placeholder="如：偶尔加班" data-field="overtimeSituation" bindinput="onSalaryInput" value="{{salaryData.overtimeSitiation}}" />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">补充说明</text>
+          <textarea class="form-textarea" placeholder="可以补充吐槽、建议等信息..." data-field="content" bindinput="onInput" value="{{formData.content}}"></textarea>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-card" wx:if="{{publishType === 3}}">
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">评价信息</text>
+        </view>
+
+        <view class="rating-grid">
+          <view class="rating-item">
+            <text class="rating-label">综合评分</text>
+            <view class="rating-stars">
+              <text wx:for="{{5}}" wx:key="*this" class="star {{index < reviewData.ratingTotal ? 'active' : ''}}" data-field="ratingTotal" data-value="{{index + 1}}" bindtap="setRating">★</text>
+            </view>
+            <text class="rating-value">{{reviewData.ratingTotal}}分</text>
+          </view>
+          <view class="rating-item">
+            <text class="rating-label">薪资满意度</text>
+            <view class="rating-stars">
+              <text wx:for="{{5}}" wx:key="*this" class="star {{index < reviewData.ratingSalary ? 'active' : ''}}" data-field="ratingSalary" data-value="{{index + 1}}" bindtap="setRating">★</text>
+            </view>
+            <text class="rating-value">{{reviewData.ratingSalary}}分</text>
+          </view>
+          <view class="rating-item">
+            <text class="rating-label">企业文化</text>
+            <view class="rating-stars">
+              <text wx:for="{{5}}" wx:key="*this" class="star {{index < reviewData.ratingCulture ? 'active' : ''}}" data-field="ratingCulture" data-value="{{index + 1}}" bindtap="setRating">★</text>
+            </view>
+            <text class="rating-value">{{reviewData.ratingCulture}}分</text>
+          </view>
+          <view class="rating-item">
+            <text class="rating-label">晋升空间</text>
+            <view class="rating-stars">
+              <text wx:for="{{5}}" wx:key="*this" class="star {{index < reviewData.ratingPromotion ? 'active' : ''}}" data-field="ratingPromotion" data-value="{{index + 1}}" bindtap="setRating">★</text>
+            </view>
+            <text class="rating-value">{{reviewData.ratingPromotion}}分</text>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">优点</text>
+          <textarea class="form-textarea" placeholder="描述公司的优点..." data-field="prosText" bindinput="onReviewInput" value="{{reviewData.prosText}}"></textarea>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">缺点</text>
+          <textarea class="form-textarea" placeholder="描述公司的缺点..." data-field="consText" bindinput="onReviewInput" value="{{reviewData.consText}}"></textarea>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-card">
+      <view class="form-section">
+        <view class="form-item">
+          <text class="form-label">标签</text>
+          <input class="form-input" placeholder="多个标签用逗号分隔，如：大厂,996,推荐" data-field="tags" bindinput="onInput" value="{{formData.tags}}" />
+          <view class="tag-suggestions">
+            <text class="tag-chip" wx:for="{{['大厂', '996', '955', '推荐', '避雷', '加班少']}}" wx:key="*this" bindtap="addTag" data-tag="{{item}}">{{item}}</text>
+          </view>
+        </view>
+
+        <view class="anonymous-option">
+          <switch checked="{{isAnonymous}}" bindchange="toggleAnonymous" color="#3366ff" />
+          <text class="anonymous-label">匿名发布</text>
+          <text class="anonymous-hint">匿名后您的身份将不会显示</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="submit-area">
+      <button class="submit-btn" bindtap="submitForm" loading="{{submitting}}">
+        <text class="btn-icon">📤</text>
+        <text>提交发布</text>
+      </button>
+    </view>
+
+    <view class="disclaimer">
+      <text>发布前请确保内容真实，不得包含虚假信息、敏感内容或侵犯他人权益的内容。</text>
+    </view>
+  </scroll-view>
+
+  <tab-bar current="{{tabBarCurrent}}" />
+</view>

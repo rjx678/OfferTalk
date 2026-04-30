@@ -1,0 +1,43 @@
+<!-- pages/company/list.wxml -->
+<view class="container">
+  <custom-nav title="公司榜单" back="{{false}}" background="#3366ff" color="#ffffff"></custom-nav>
+  <view class="search-box">
+    <icon type="search" size="16"></icon>
+    <input placeholder="搜索公司名称..." bindconfirm="onSearch" confirm-type="search"/>
+  </view>
+
+  <scroll-view scroll-y class="company-scroll" lower-threshold="100" bindscrolltolower="loadMore">
+    <view class="company-list">
+      <view class="company-card" wx:for="{{companies}}" wx:key="id" bindtap="toCompanyDetail" data-id="{{item.id}}">
+        <view class="logo-placeholder">{{item.name[0]}}</view>
+        <view class="info">
+          <view class="name-row">
+            <text class="name">{{item.name}}</text>
+            <text class="industry">{{item.industry}}</text>
+          </view>
+          <view class="ratings">
+            <view class="rating-item">
+              <text class="label">综合</text>
+              <text class="value">{{item.ratingTotal}}</text>
+            </view>
+            <view class="rating-item">
+              <text class="label">面试</text>
+              <text class="value">{{item.ratingInterview}}</text>
+            </view>
+            <view class="rating-item">
+              <text class="label">加班</text>
+              <text class="value">{{item.ratingOvertime}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="arrow">></view>
+      </view>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">加载中...</view>
+    <view class="no-more" wx:if="{{!hasMore && companies.length > 0}}">没有更多了</view>
+    <view class="empty" wx:if="{{!loading && companies.length === 0}}">暂无公司数据</view>
+  </scroll-view>
+
+  <tab-bar current="{{tabBarCurrent}}" />
+</view>

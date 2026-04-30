@@ -1,0 +1,29 @@
+<view class="container">
+  <custom-nav title="评论" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="comment-list">
+    <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+      <view class="comment-header">
+        <image class="comment-avatar" src="/images/default-avatar.png" mode="aspectFill" />
+        <view class="comment-meta">
+          <text class="comment-author">{{item.isAnonymous ? '匿名用户' : '用户' + item.userId}}</text>
+          <text class="comment-time">{{item.createTime}}</text>
+        </view>
+      </view>
+      <text class="comment-content">{{item.content}}</text>
+      <view class="comment-actions">
+        <text class="action-btn" bindtap="">👍 {{item.likeCount || 0}}</text>
+        <text class="action-btn" bindtap="">回复</text>
+      </view>
+    </view>
+
+    <view class="no-comment" wx:if="{{comments.length === 0}}">
+      <text>暂无评论，快来抢沙发</text>
+    </view>
+  </scroll-view>
+
+  <view class="comment-input-area">
+    <input class="comment-input" placeholder="{{placeholder}}" bindinput="onInput" value="{{newComment}}" confirm-type="send" bindconfirm="submitComment" />
+    <button class="submit-btn" bindtap="submitComment">发送</button>
+  </view>
+</view>

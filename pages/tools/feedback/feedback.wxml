@@ -1,0 +1,82 @@
+<view class="container">
+  <custom-nav title="意见反馈" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+  
+  <scroll-view scroll-y class="content-scroll">
+    <!-- 反馈类型 -->
+    <view class="section">
+      <view class="section-title">反馈类型</view>
+      <view class="type-list">
+        <view class="type-item {{feedbackType === 1 ? 'active' : ''}}" bindtap="selectType" data-type="1">
+          <text class="type-icon">❓</text>
+          <text class="type-text">问题反馈</text>
+        </view>
+        <view class="type-item {{feedbackType === 2 ? 'active' : ''}}" bindtap="selectType" data-type="2">
+          <text class="type-icon">💡</text>
+          <text class="type-text">功能建议</text>
+        </view>
+        <view class="type-item {{feedbackType === 3 ? 'active' : ''}}" bindtap="selectType" data-type="3">
+          <text class="type-icon">🐛</text>
+          <text class="type-text">Bug报告</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 反馈内容 -->
+    <view class="section">
+      <view class="section-title">反馈内容</view>
+      <textarea class="content-input" placeholder="请详细描述您的问题、建议或Bug信息..." 
+                bindinput="onContentInput" value="{{content}}" maxlength="500" />
+      <view class="word-count">{{content.length}}/500</view>
+    </view>
+
+    <!-- 上传图片 -->
+    <view class="section">
+      <view class="section-title">上传图片（可选）</view>
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="index">
+          <image class="uploaded-image" src="{{item}}" mode="aspectFill" />
+          <view class="remove-image" bindtap="removeImage" data-index="{{index}}">×</view>
+        </view>
+        <view class="add-image" bindtap="chooseImage" wx:if="{{images.length < 3}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="section">
+      <view class="section-title">联系方式（可选）</view>
+      <view class="contact-wrapper">
+        <input class="contact-input" placeholder="请输入邮箱或手机号" 
+               bindinput="onContactInput" value="{{contact}}" />
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-btn" bindtap="submitFeedback">提交反馈</view>
+
+    <!-- 历史反馈 -->
+    <view class="history-section" wx:if="{{historyList.length > 0}}">
+      <view class="section-title">我的反馈记录</view>
+      <view class="history-list">
+        <view class="history-item" wx:for="{{historyList}}" wx:key="id" bindtap="viewDetail" data-id="{{item.id}}">
+          <view class="history-header">
+            <view class="history-type">
+              <text class="type-badge type-{{item.type}}">{{getTypeName(item.type)}}</text>
+            </view>
+            <view class="history-status status-{{item.status}}">{{getStatusName(item.status)}}</view>
+          </view>
+          <text class="history-content">{{item.content}}</text>
+          <text class="history-time">{{item.createTime}}</text>
+          <view class="history-reply" wx:if="{{item.replyContent}}">
+            <text class="reply-icon">📩</text>
+            <text class="reply-text">官方回复：{{item.replyContent}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

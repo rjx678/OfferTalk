@@ -1,0 +1,36 @@
+<!-- pages/salary/list.wxml -->
+<view class="container">
+  <custom-nav title="薪资爆料" back="{{true}}" background="#fff"></custom-nav>
+  <view class="content">
+  <view class="header">
+    <view class="title">薪资爆料区</view>
+    <view class="subtitle">匿名分享，真实可靠</view>
+  </view>
+
+  <view class="salary-list">
+    <view class="salary-item" wx:for="{{salaries}}" wx:key="id">
+      <view class="top-row">
+        <text class="company">{{item.companyName || '某互联网大厂'}}</text>
+        <text class="package">{{item.totalPackage}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="job">{{item.jobTitle}}</text>
+        <text class="city">{{item.city}}</text>
+        <text class="base">Base: {{item.baseSalary}}</text>
+      </view>
+      <view class="tags">
+        <text class="tag" wx:if="{{item.signBonus}}">签字费: {{item.signBonus}}</text>
+        <text class="tag" wx:if="{{item.housingSubsidy}}">房补: {{item.housingSubsidy}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="empty" wx:if="{{salaries.length === 0}}">
+    暂无爆料数据，欢迎点击发布
+  </view>
+
+  <view class="disclaimer">
+    * 声明：所有薪资数据均为匿名爆料，仅供求职参考。
+  </view>
+  </view>
+</view>

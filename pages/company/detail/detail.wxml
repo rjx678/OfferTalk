@@ -1,0 +1,180 @@
+<view class="container">
+  <custom-nav title="{{company.name || '公司详情'}}" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <!-- 公司基本信息 -->
+    <view class="company-header" wx:if="{{company}}">
+      <view class="company-logo">
+        <image src="{{company.logoUrl}}" mode="aspectFill" />
+      </view>
+      <view class="company-info">
+        <text class="company-name">{{company.name}}</text>
+        <text class="company-stage">{{company.stage}} · {{company.scale}} · {{company.industry}}</text>
+        <text class="company-location">{{company.city}}</text>
+        <view class="company-tags" wx:if="{{company.tags}}">
+          <text class="tag" wx:for="{{company.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 公司简介 -->
+    <view class="company-profile" wx:if="{{company && company.description}}">
+      <view class="section-title">公司简介</view>
+      <text class="profile-text">{{company.description}}</text>
+    </view>
+
+    <!-- 评分概览 -->
+    <view class="rating-section" wx:if="{{company}}">
+      <view class="rating-header">
+        <text class="rating-title">综合评分</text>
+        <text class="rating-score">{{company.ratingTotal || 0}}</text>
+        <text class="rating-count">{{company.reviewCount || 0}}条评价</text>
+      </view>
+      <view class="rating-details">
+        <view class="rating-item">
+          <text class="rating-label">薪资满意度</text>
+          <text class="rating-value">{{company.ratingSalary || 0}}</text>
+          <view class="rating-bar">
+            <view class="rating-fill" style="width: {{(company.ratingSalary || 0) * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <text class="rating-label">企业文化</text>
+          <text class="rating-value">{{company.ratingCulture || 0}}</text>
+          <view class="rating-bar">
+            <view class="rating-fill" style="width: {{(company.ratingCulture || 0) * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <text class="rating-label">加班强度</text>
+          <text class="rating-value">{{company.ratingOvertime || 0}}</text>
+          <view class="rating-bar">
+            <view class="rating-fill" style="width: {{(company.ratingOvertime || 0) * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <text class="rating-label">晋升空间</text>
+          <text class="rating-value">{{company.ratingPromotion || 0}}</text>
+          <view class="rating-bar">
+            <view class="rating-fill" style="width: {{(company.ratingPromotion || 0) * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <text class="rating-label">面试难度</text>
+          <text class="rating-value">{{company.ratingInterview || 0}}</text>
+          <view class="rating-bar">
+            <view class="rating-fill" style="width: {{(company.ratingInterview || 0) * 20}}%"></view>
+          </view>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- 内容标签页 -->
+    <view class="content-tabs">
+      <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-id="0">面经 ({{counts.interview}})</view>
+      <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-id="1">薪资 ({{counts.salary}})</view>
+      <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-id="2">评价 ({{counts.review}})</view>
+    </view>
+
+    <!-- 内容列表 -->
+    <view class="content-list">
+      <view class="interview-list" wx:if="{{currentTab === 0}}">
+        <view class="content-card" wx:for="{{interviews}}" wx:key="id" bindtap="toInterviewDetail" data-id="{{item.id}}">
+          <view class="card-header">
+            <text class="card-title">{{item.title}}</text>
+            <view class="card-type type-interview">面经</view>
+          </view>
+          <view class="card-meta">
+            <text class="meta-item">{{item.jobCategory}}</text>
+            <text class="meta-item">{{item.city}}</text>
+            <text class="meta-item" wx:if="{{item.workExperience}}">{{item.workExperience}}</text>
+            <text class="meta-item status-{{item.status === '已通过' ? 'success' : item.status === '已拒绝' ? 'danger' : 'info'}}">{{item.status}}</text>
+          </view>
+          <view class="card-content">{{item && item.experienceText ? item.experienceText : ''}}</view>
+          <view class="card-footer">
+            <view class="truth-score">
+              <text class="score-label">真实度</text>
+              <text class="score-value">{{item.truthScore}}</text>
+            </view>
+            <view class="stats">
+              <text class="stat-item">👀 {{item.viewCount}}</text>
+              <text class="stat-item">👍 {{item.likeCount}}</text>
+              <text class="stat-item">💬 {{item.commentCount}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="salary-list" wx:if="{{currentTab === 1}}">
+        <view class="content-card" wx:for="{{salaries}}" wx:key="id" bindtap="toSalaryDetail" data-id="{{item.id}}">
+          <view class="card-header">
+            <text class="card-title">{{item.title}}</text>
+            <view class="card-type type-salary">薪资</view>
+          </view>
+          <view class="salary-info">
+            <text class="salary-value">{{item.formattedSalary || '0'}}万</text>
+            <text class="salary-unit">/年</text>
+          </view>
+          <view class="card-meta">
+            <text class="meta-item">{{item.jobCategory}}</text>
+            <text class="meta-item">{{item.city}}</text>
+            <text class="meta-item">{{item.level}}</text>
+          </view>
+          <view class="card-footer">
+            <view class="truth-score">
+              <text class="score-label">真实度</text>
+              <text class="score-value">{{item.truthScore}}</text>
+            </view>
+            <view class="stats">
+              <text class="stat-item">👀 {{item.viewCount}}</text>
+              <text class="stat-item">👍 {{item.likeCount}}</text>
+              <text class="stat-item">💬 {{item.commentCount}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="review-list" wx:if="{{currentTab === 2}}">
+        <view class="content-card" wx:for="{{reviews}}" wx:key="id" bindtap="toReviewDetail" data-id="{{item.id}}">
+          <view class="card-header">
+            <text class="card-title">{{item.title}}</text>
+            <view class="card-type type-review">评价</view>
+          </view>
+          <view class="review-rating">
+            <text class="rating-label">综合评分</text>
+            <text class="rating-value">{{item.ratingTotal}}</text>
+          </view>
+          <view class="card-meta">
+            <text class="meta-item">{{item.jobCategory}}</text>
+            <text class="meta-item">{{item.city}}</text>
+            <text class="meta-item">{{item.recruitType === 1 ? '在职' : item.recruitType === 2 ? '离职' : '面试过'}}</text>
+          </view>
+          <view class="card-content">
+            <text class="pros-text">优点：{{item && item.prosText ? item.prosText : ''}}</text>
+            <text class="cons-text">缺点：{{item && item.consText ? item.consText : ''}}</text>
+          </view>
+          <view class="card-footer">
+            <view class="truth-score">
+              <text class="score-label">真实度</text>
+              <text class="score-value">{{item.truthScore}}</text>
+            </view>
+            <view class="stats">
+              <text class="stat-item">👀 {{item.viewCount}}</text>
+              <text class="stat-item">👍 {{item.likeCount}}</text>
+              <text class="stat-item">💬 {{item.commentCount}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="loading" wx:if="{{loading}}">加载中...</view>
+      <view class="no-more" wx:if="{{!hasMore}}">没有更多了</view>
+      <view class="empty" wx:if="{{(currentTab === 0 && interviews.length === 0) || (currentTab === 1 && salaries.length === 0) || (currentTab === 2 && reviews.length === 0)}}">
+        <text class="empty-icon">📭</text>
+        <text class="empty-text">暂无内容</text>
+        <text class="empty-hint">快来发布第一条内容吧</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,102 @@
+<view class="container">
+  <custom-nav title="设置" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <!-- 个人资料模块 -->
+    <view class="section">
+      <view class="section-title">个人资料</view>
+      <view class="settings-card">
+        <view class="setting-item" bindtap="navigateToProfileEdit">
+          <view class="setting-left">
+            <view class="avatar-wrapper">
+              <image class="avatar" src="{{profile.avatarUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+            </view>
+            <view class="user-info">
+              <text class="user-name">{{profile.nickname || '未设置昵称'}}</text>
+              <text class="user-bio">{{profile.bio || '这个人很懒，什么都没写'}}</text>
+            </view>
+          </view>
+          <text class="setting-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 隐私设置模块 -->
+    <view class="section">
+      <view class="section-title">隐私设置</view>
+      <view class="settings-card">
+        <view class="setting-item switch-item">
+          <text class="setting-label">匿名发布默认开启</text>
+          <switch checked="{{privacySettings.anonymousDefault}}" bindchange="onPrivacyChange" data-field="anonymousDefault" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <text class="setting-label">允许他人查看我的收藏</text>
+          <switch checked="{{privacySettings.showCollections}}" bindchange="onPrivacyChange" data-field="showCollections" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <text class="setting-label">允许他人查看我的发布</text>
+          <switch checked="{{privacySettings.showPosts}}" bindchange="onPrivacyChange" data-field="showPosts" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item no-border">
+          <text class="setting-label">个性化推荐</text>
+          <switch checked="{{privacySettings.personalizedRecommend}}" bindchange="onPrivacyChange" data-field="personalizedRecommend" color="#3366ff" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 通知设置模块 -->
+    <view class="section">
+      <view class="section-title">通知设置</view>
+      <view class="settings-card">
+        <view class="setting-item switch-item">
+          <text class="setting-label">评论通知</text>
+          <switch checked="{{notificationSettings.commentNotify}}" bindchange="onNotificationChange" data-field="commentNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <text class="setting-label">点赞通知</text>
+          <switch checked="{{notificationSettings.likeNotify}}" bindchange="onNotificationChange" data-field="likeNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <text class="setting-label">@我通知</text>
+          <switch checked="{{notificationSettings.atNotify}}" bindchange="onNotificationChange" data-field="atNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <text class="setting-label">系统通知</text>
+          <switch checked="{{notificationSettings.systemNotify}}" bindchange="onNotificationChange" data-field="systemNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item no-border">
+          <text class="setting-label">周报推送</text>
+          <switch checked="{{notificationSettings.weeklyReport}}" bindchange="onNotificationChange" data-field="weeklyReport" color="#3366ff" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 关于我们模块 -->
+    <view class="section">
+      <view class="section-title">关于我们</view>
+      <view class="settings-card">
+        <view class="setting-item" bindtap="navigateToUserAgreement">
+          <text class="setting-label">用户协议</text>
+          <text class="setting-arrow">›</text>
+        </view>
+        <view class="setting-item" bindtap="navigateToPrivacyPolicy">
+          <text class="setting-label">隐私政策</text>
+          <text class="setting-arrow">›</text>
+        </view>
+        <view class="setting-item" bindtap="navigateToFeedback">
+          <text class="setting-label">意见反馈</text>
+          <text class="setting-arrow">›</text>
+        </view>
+        <view class="setting-item no-border" bindtap="checkForUpdate">
+          <text class="setting-label">检查更新</text>
+          <view class="version-info">
+            <text class="version-text">v{{appVersion}}</text>
+            <text class="setting-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

@@ -1,0 +1,158 @@
+<view class="container">
+  <custom-nav title="薪资计算器" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+  
+  <scroll-view scroll-y class="content-scroll">
+    <!-- 城市选择 -->
+    <view class="section">
+      <view class="section-title">选择城市</view>
+      <scroll-view scroll-x class="city-scroll">
+        <view wx:for="{{cities}}" wx:key="cityCode" 
+              bindtap="selectCity" data-code="{{item.cityCode}}"
+              class="city-tag {{selectedCity === item.cityCode ? 'active' : ''}}">
+          {{item.cityName}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="section">
+      <view class="section-title">基本信息</view>
+      
+      <view class="form-item">
+        <text class="label">月薪（元）</text>
+        <input class="input" type="number" placeholder="请输入月薪" 
+               bindinput="onInputChange" data-field="monthlyBase" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">年薪形式</text>
+        <picker mode="selector" range="{{salaryMonthOptions}}" bindchange="onSalaryMonthChange">
+          <view class="picker-value">
+            {{selectedSalaryMonth === 0 ? '请选择' : salaryMonthOptions[selectedSalaryMonth - 1]}}
+            <text class="arrow">›</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="form-item">
+        <text class="label">年终奖（元）</text>
+        <input class="input" type="number" placeholder="请输入年终奖" 
+               bindinput="onInputChange" data-field="annualBonus" />
+      </view>
+    </view>
+
+    <!-- 股票期权 -->
+    <view class="section">
+      <view class="section-title">股票期权（可选）</view>
+      
+      <view class="form-item">
+        <text class="label">RSU数量</text>
+        <input class="input" type="number" placeholder="0" 
+               bindinput="onInputChange" data-field="rsuCount" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">RSU单价（元）</text>
+        <input class="input" type="number" placeholder="0" 
+               bindinput="onInputChange" data-field="rsuPrice" />
+      </view>
+    </view>
+
+    <!-- 社保公积金设置 -->
+    <view class="section">
+      <view class="section-title">社保公积金设置</view>
+      
+      <view class="form-item">
+        <text class="label">养老保险 {{currentConfig.pensionRatio}}%</text>
+        <slider class="slider" min="5" max="12" step="0.5" 
+                value="{{currentConfig.pensionRatio}}" 
+                bindchange="onSliderChange" data-field="pensionRatio" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">医疗保险 {{currentConfig.medicalRatio}}%</text>
+        <slider class="slider" min="1" max="5" step="0.5" 
+                value="{{currentConfig.medicalRatio}}" 
+                bindchange="onSliderChange" data-field="medicalRatio" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">失业保险 {{currentConfig.unemploymentRatio}}%</text>
+        <slider class="slider" min="0" max="1" step="0.1" 
+                value="{{currentConfig.unemploymentRatio}}" 
+                bindchange="onSliderChange" data-field="unemploymentRatio" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">公积金 {{currentConfig.housingFundRatio}}%</text>
+        <slider class="slider" min="5" max="12" step="1" 
+                value="{{currentConfig.housingFundRatio}}" 
+                bindchange="onSliderChange" data-field="housingFundRatio" />
+      </view>
+    </view>
+
+    <!-- 计算按钮 -->
+    <view class="calculate-btn" bindtap="calculate">计算薪资</view>
+
+    <!-- 计算结果 -->
+    <view class="result-section" wx:if="{{result}}">
+      <view class="section-title">计算结果</view>
+      
+      <view class="result-card">
+        <view class="result-row">
+          <text class="result-label">税前年薪</text>
+          <text class="result-value">¥{{formatNumber(result.grossAnnualSalary)}}</text>
+        </view>
+        <view class="result-row highlight">
+          <text class="result-label">税后年薪</text>
+          <text class="result-value">¥{{formatNumber(result.netAnnualSalary)}}</text>
+        </view>
+        <view class="result-row">
+          <text class="result-label">税后月薪</text>
+          <text class="result-value">¥{{formatNumber(result.netMonthlySalary)}}</text>
+        </view>
+        <view class="result-row">
+          <text class="result-label">年度个税</text>
+          <text class="result-value">¥{{formatNumber(result.annualTax)}}</text>
+        </view>
+      </view>
+
+      <!-- 月度明细 -->
+      <view class="detail-card">
+        <view class="detail-header">月度明细</view>
+        <view class="detail-grid">
+          <view class="detail-item">
+            <text class="detail-label">应发工资</text>
+            <text class="detail-value">¥{{formatNumber(result.monthlyDetail.grossSalary)}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">养老保险</text>
+            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.pension)}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">医疗保险</text>
+            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.medical)}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">失业保险</text>
+            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.unemployment)}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">公积金</text>
+            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.housingFund)}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">个税</text>
+            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.tax)}}</text>
+          </view>
+          <view class="detail-item total">
+            <text class="detail-label">实发工资</text>
+            <text class="detail-value">¥{{formatNumber(result.monthlyDetail.netSalary)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

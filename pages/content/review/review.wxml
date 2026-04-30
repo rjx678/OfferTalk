@@ -1,0 +1,197 @@
+<view class="container">
+  <custom-nav title="公司评价" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll" enhanced="true" show-scrollbar="false" wx:if="{{review}}" bindscroll="onScroll" scroll-into-view="{{scrollToView}}" scroll-with-animation="true">
+    <view id="top"></view>
+
+    <view class="review-header">
+      <text class="review-title">{{review.title}}</text>
+      <view class="company-info" bindtap="toCompanyDetail" data-id="{{review.companyId}}">
+        <text class="company-name">{{review.companyName}}</text>
+        <text class="company-stage">{{review.companyStage || ''}}</text>
+      </view>
+      <view class="overall-rating">
+        <view class="rating-header">
+          <text class="rating-label">综合评分</text>
+          <text class="rating-value">{{review.ratingTotal}}</text>
+        </view>
+        <view class="rating-stars">
+          <text wx:for="{{5}}" wx:key="*this" class="star {{item <= review.ratingTotal ? 'active' : ''}}">⭐</text>
+        </view>
+        <text class="rating-count">{{review.ratingCount || 0}} 人评价</text>
+      </view>
+      <view class="review-tags" wx:if="{{review.tags && review.tags.length > 0}}">
+        <text class="tag" wx:for="{{review.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="rating-section">
+      <view class="section-header">
+        <text class="section-title">多维评分</text>
+      </view>
+      <view class="rating-grid">
+        <view class="rating-item">
+          <view class="rating-info">
+            <text class="rating-label">薪资满意度</text>
+            <text class="rating-value">{{review.ratingSalary}}</text>
+          </view>
+          <view class="rating-bar">
+            <view class="bar-fill" style="width: {{review.ratingSalary * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <view class="rating-info">
+            <text class="rating-label">企业文化</text>
+            <text class="rating-value">{{review.ratingCulture}}</text>
+          </view>
+          <view class="rating-bar">
+            <view class="bar-fill" style="width: {{review.ratingCulture * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <view class="rating-info">
+            <text class="rating-label">加班强度</text>
+            <text class="rating-value">{{review.ratingOvertime}}</text>
+          </view>
+          <view class="rating-bar">
+            <view class="bar-fill" style="width: {{review.ratingOvertime * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <view class="rating-info">
+            <text class="rating-label">晋升空间</text>
+            <text class="rating-value">{{review.ratingPromotion}}</text>
+          </view>
+          <view class="rating-bar">
+            <view class="bar-fill" style="width: {{review.ratingPromotion * 20}}%"></view>
+          </view>
+        </view>
+        <view class="rating-item">
+          <view class="rating-info">
+            <text class="rating-label">管理水平</text>
+            <text class="rating-value">{{review.ratingManagement}}</text>
+          </view>
+          <view class="rating-bar">
+            <view class="bar-fill" style="width: {{review.ratingManagement * 20}}%"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="review-section pros-section">
+      <view class="section-header">
+        <text class="section-title">优点</text>
+        <text class="section-icon">👍</text>
+      </view>
+      <text class="section-text">{{review.prosText}}</text>
+    </view>
+
+    <view class="review-section cons-section">
+      <view class="section-header">
+        <text class="section-title">缺点</text>
+        <text class="section-icon">👎</text>
+      </view>
+      <text class="section-text">{{review.consText}}</text>
+    </view>
+
+    <view class="review-section" wx:if="{{review.overtimeFrequency || review.layoffSituation || review.adviceToCompany}}">
+      <view class="section-header">
+        <text class="section-title">其他信息</text>
+      </view>
+      <view class="info-list">
+        <view class="info-item" wx:if="{{review.overtimeFrequency}}">
+          <view class="info-header">
+            <text class="info-icon">⏰</text>
+            <text class="info-label">加班频率</text>
+          </view>
+          <text class="info-value">{{review.overtimeFrequency}}</text>
+        </view>
+        <view class="info-item" wx:if="{{review.overtimeSalary}}">
+          <view class="info-header">
+            <text class="info-icon">💰</text>
+            <text class="info-label">加班薪资</text>
+          </view>
+          <text class="info-value">{{review.overtimeSalary}}</text>
+        </view>
+        <view class="info-item" wx:if="{{review.layoffSituation}}">
+          <view class="info-header">
+            <text class="info-icon">📊</text>
+            <text class="info-label">裁员情况</text>
+          </view>
+          <text class="info-value">{{review.layoffSituation}}</text>
+        </view>
+        <view class="info-item" wx:if="{{review.adviceToCompany}}">
+          <view class="info-header">
+            <text class="info-icon">💡</text>
+            <text class="info-label">给公司的建议</text>
+          </view>
+          <text class="info-value">{{review.adviceToCompany}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="article-footer">
+      <view class="author-info">
+        <text class="author-name">{{review.isAnonymous ? '匿名用户' : '用户' + review.userId}}</text>
+        <text class="post-time">{{review.createTime}}</text>
+        <text class="author-job" wx:if="{{review.jobCategory}}">{{review.jobCategory}}</text>
+      </view>
+      <view class="truth-badge">
+        <text class="badge-label">真实度</text>
+        <text class="badge-value">{{review.truthScore}}</text>
+      </view>
+    </view>
+
+    <view class="disclaimer-bottom">
+      <text>声明：内容仅供参考，具体情况以实际为准。</text>
+    </view>
+
+    <view class="bottom-spacer" id="bottom-spacer"></view>
+
+    <view class="comment-section" id="comment-section">
+      <view class="section-header">
+        <text class="section-title">评论</text>
+        <text class="section-count">{{comments.length}}</text>
+      </view>
+      <view class="comment-list">
+        <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+          <view class="comment-header">
+            <text class="comment-author">{{item.isAnonymous ? '匿名' : '用户' + item.userId}}</text>
+            <text class="comment-time">{{item.createTime}}</text>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+          <view class="comment-actions">
+            <text class="action-item" bindtap="handleCommentLike" data-id="{{item.id}}">👍 {{item.likeCount || 0}}</text>
+          </view>
+        </view>
+        <view class="no-comments" wx:if="{{comments.length === 0}}">
+          <text class="no-comments-text">暂无评论，快来发表你的看法吧！</text>
+        </view>
+      </view>
+      <view class="comment-input-area">
+        <input class="comment-input" placeholder="写下你的评论..." bindinput="onCommentInput" value="{{commentContent}}" />
+        <button class="comment-submit" bindtap="handleSubmitComment" disabled="{{!commentContent}}">发送</button>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="action-bar">
+    <view class="action-item {{isLiked ? 'active' : ''}}" bindtap="handleLike">
+      <text class="action-icon">{{isLiked ? '👍' : '🤍'}}</text>
+      <text class="action-text">{{review ? review.likeCount || 0 : 0}}</text>
+    </view>
+    <view class="action-item {{isCollected ? 'active' : ''}}" bindtap="handleCollect">
+      <text class="action-icon">{{isCollected ? '⭐' : '☆'}}</text>
+      <text class="action-text">收藏</text>
+    </view>
+    <view class="action-item" bindtap="handleShare">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+  </view>
+
+  <view class="quick-nav {{showQuickNav ? 'show' : ''}}" bindtap="scrollToComment">
+    <text class="quick-nav-icon">💬</text>
+    <text class="quick-nav-text">直达评论</text>
+  </view>
+</view>

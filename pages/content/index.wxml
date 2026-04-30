@@ -1,0 +1,44 @@
+<!-- pages/content/index.wxml -->
+<view class="container">
+  <custom-nav title="面经详情" back="{{true}}" background="#fff"></custom-nav>
+  <view class="content" wx:if="{{post}}">
+  <view class="header">
+    <view class="title">{{post.title}}</view>
+    <view class="meta">
+      <text class="company">{{post.companyName || '公司'}}</text>
+      <text class="tag">{{post.jobTitle}}</text>
+      <text class="time">{{post.createTime}}</text>
+    </view>
+  </view>
+
+  <view class="section timeline-box" wx:if="{{post.timeline}}">
+    <view class="section-title">求职时间线</view>
+    <view class="timeline-content">{{post.timeline}}</view>
+  </view>
+
+  <view class="section content-box">
+    <view class="section-title">面试详情</view>
+    <view class="article-content">
+      <text user-select>{{post.content}}</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="footer-action">
+    <view class="action-item" bindtap="handleLike">
+      <text class="icon">{{isLiked ? '❤️' : '🤍'}}</text>
+      <text>{{post.likeCount}}</text>
+    </view>
+    <view class="action-item" bindtap="handleCollect">
+      <text class="icon">{{isCollected ? '⭐' : '☆'}}</text>
+      <text>收藏</text>
+    </view>
+    <button class="share-btn" open-type="share">分享给求职伙伴</button>
+  </view>
+
+  <!-- 免责声明 -->
+  <view class="disclaimer">
+    * 声明：本内容仅供参考，不代表该企业的官方信息。
+  </view>
+  </view>
+</view>

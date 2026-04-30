@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "custom-nav": "../../../components/custom-nav/custom-nav"
+  },
+  "navigationBarTitleText": "我的评论",
+  "navigationStyle": "custom"
+}

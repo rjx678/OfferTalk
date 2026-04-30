@@ -1,0 +1,48 @@
+<view class="container">
+  <custom-nav title="通知设置" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <view class="section">
+      <view class="section-title">通知</view>
+      <view class="settings-card">
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">💬</text>
+            <text class="setting-label">评论通知</text>
+          </view>
+          <switch checked="{{notificationSettings.commentNotify}}" bindchange="onSettingChange" data-field="commentNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">👍</text>
+            <text class="setting-label">点赞通知</text>
+          </view>
+          <switch checked="{{notificationSettings.likeNotify}}" bindchange="onSettingChange" data-field="likeNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">📢</text>
+            <text class="setting-label">@我通知</text>
+          </view>
+          <switch checked="{{notificationSettings.atNotify}}" bindchange="onSettingChange" data-field="atNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item">
+          <view class="setting-left">
+            <text class="setting-icon">🔔</text>
+            <text class="setting-label">系统通知</text>
+          </view>
+          <switch checked="{{notificationSettings.systemNotify}}" bindchange="onSettingChange" data-field="systemNotify" color="#3366ff" />
+        </view>
+        <view class="setting-item switch-item no-border">
+          <view class="setting-left">
+            <text class="setting-icon">📰</text>
+            <text class="setting-label">周报推送</text>
+          </view>
+          <switch checked="{{notificationSettings.weeklyReport}}" bindchange="onSettingChange" data-field="weeklyReport" color="#3366ff" />
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

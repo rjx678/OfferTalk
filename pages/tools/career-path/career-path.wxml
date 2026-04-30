@@ -1,0 +1,135 @@
+<view class="container">
+  <custom-nav title="职业路径规划" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+  
+  <scroll-view scroll-y class="content-scroll">
+    <view class="section">
+      <view class="section-title">当前职位</view>
+      <picker mode="selector" range="{{positionNames}}" bindchange="onCurrentPositionChange">
+        <view class="picker-item">
+          <text class="picker-label">当前职位：</text>
+          <text class="picker-value">{{currentPositionName || '请选择'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="section">
+      <view class="section-title">目标职位</view>
+      <picker mode="selector" range="{{positionNames}}" bindchange="onTargetPositionChange">
+        <view class="picker-item">
+          <text class="picker-label">目标职位：</text>
+          <text class="picker-value">{{targetPositionName || '请选择'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="section">
+      <view class="section-title">规划时间</view>
+      <view class="time-options">
+        <view wx:for="{{timeOptions}}" wx:key="value"
+              bindtap="selectTime" data-value="{{item.value}}"
+              class="time-option {{planMonths === item.value ? 'active' : ''}}">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <view class="generate-btn" bindtap="generatePath">生成规划路径</view>
+
+    <view class="result-section" wx:if="{{careerPath}}">
+      <view class="section-title">发展路径</view>
+      
+      <view class="path-overview">
+        <view class="path-start">
+          <text class="path-label">当前</text>
+          <text class="path-position">{{careerPath.currentPositionName || ''}}</text>
+        </view>
+        <view class="path-arrow">→</view>
+        <view class="path-end">
+          <text class="path-label">目标</text>
+          <text class="path-position">{{careerPath.targetPositionName || ''}}</text>
+        </view>
+        <view class="path-duration">预计{{careerPath.planMonths || 0}}个月</view>
+      </view>
+
+      <view class="stages-section">
+        <view class="section-title">发展阶段</view>
+        <view class="stages-list">
+          <view class="stage-card" wx:for="{{careerPath.stages || []}}" wx:key="stageNumber">
+            <view class="stage-header">
+              <view class="stage-number">阶段{{item.stageNumber || 0}}</view>
+              <view class="stage-title">{{item.title || ''}}</view>
+              <view class="stage-duration">{{item.durationMonths || 0}}个月</view>
+            </view>
+            <view class="stage-objectives">
+              <text class="objectives-label">阶段目标：</text>
+              <view class="objectives-list">
+                <text class="objective-item" wx:for="{{item.objectives || []}}" wx:key="index">{{item}}</text>
+              </view>
+            </view>
+            <view class="stage-skills">
+              <text class="skills-label">关键技能：</text>
+              <view class="skills-tags">
+                <text class="skill-tag" wx:for="{{item.keySkills || []}}" wx:key="index">{{item}}</text>
+              </view>
+            </view>
+            <view class="stage-milestone">
+              <text class="milestone-icon">🎯</text>
+              <text class="milestone-text">{{item.milestone || ''}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="skill-gap-section">
+        <view class="section-title">技能差距分析</view>
+        <view class="gap-cards">
+          <view class="gap-card missing">
+            <view class="gap-header">
+              <text class="gap-icon">❌</text>
+              <text class="gap-title">缺失技能</text>
+            </view>
+            <view class="gap-content">
+              <text class="gap-item" wx:for="{{missingSkills || []}}" wx:key="index">{{item}}</text>
+              <text class="gap-empty" wx:if="{{(!missingSkills || missingSkills.length === 0)}}">暂无缺失技能</text>
+            </view>
+          </view>
+          <view class="gap-card improve">
+            <view class="gap-header">
+              <text class="gap-icon">📈</text>
+              <text class="gap-title">待提升技能</text>
+            </view>
+            <view class="gap-content">
+              <text class="gap-item" wx:for="{{toImproveSkills || []}}" wx:key="index">{{item}}</text>
+              <text class="gap-empty" wx:if="{{(!toImproveSkills || toImproveSkills.length === 0)}}">暂无待提升技能</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="resources-section">
+        <view class="section-title">学习资源推荐</view>
+        <view class="resources-list">
+          <view class="resource-card" wx:for="{{careerPath.resources || []}}" wx:key="resourceId">
+            <view class="resource-header">
+              <text class="resource-type">{{item.type || ''}}</text>
+              <text class="resource-rating">⭐{{item.rating || 0}}</text>
+            </view>
+            <text class="resource-title">{{item.title || ''}}</text>
+            <view class="resource-info">
+              <text class="resource-platform">{{item.platform || ''}}</text>
+              <text class="resource-duration">⏱️{{item.durationHours || 0}}小时</text>
+            </view>
+            <text class="resource-desc">{{item.description || ''}}</text>
+            <view class="resource-action">
+              <text class="action-text">查看详情</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

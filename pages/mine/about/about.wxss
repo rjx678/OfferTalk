@@ -1,0 +1,115 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-top: env(safe-area-inset-top);
+}
+
+.content-scroll {
+  height: calc(100vh - 88rpx - env(safe-area-inset-top));
+  padding-top: 48rpx;
+}
+
+.section {
+  margin: 20rpx;
+}
+
+.section-title {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+.settings-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.about-card {
+  background: linear-gradient(135deg, #3366ff, #6699ff);
+  border-radius: 16rpx;
+  padding: 48rpx 32rpx;
+  text-align: center;
+}
+
+.app-logo {
+  margin-bottom: 16rpx;
+}
+
+.logo-text {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.app-version {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.app-desc {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item.no-border {
+  border-bottom: none;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+}
+
+.setting-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.setting-label {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.setting-arrow {
+  font-size: 32rpx;
+  color: #cccccc;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.contact-item.no-border {
+  border-bottom: none;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.contact-value {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.bottom-space {
+  height: 100rpx;
+}

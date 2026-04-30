@@ -1,0 +1,40 @@
+<view class="container">
+  <custom-nav title="个人资料" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll">
+    <view class="section">
+      <view class="avatar-section">
+        <view class="avatar-wrapper" bindtap="changeAvatar">
+          <image class="avatar" src="{{displayAvatarUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+          <view class="avatar-mask">
+            <text class="camera-icon">📷</text>
+            <text class="change-text">更换头像</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="settings-card">
+        <view class="form-item">
+          <text class="form-label">昵称</text>
+          <input class="form-input" placeholder="请输入昵称" value="{{formData.nickname}}" bindinput="onInputChange" data-field="nickname" maxlength="20" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">手机号</text>
+          <input class="form-input" type="number" placeholder="请输入手机号" value="{{formData.phone}}" bindinput="onInputChange" data-field="phone" maxlength="11" />
+        </view>
+        <view class="form-item no-border">
+          <text class="form-label">个人简介</text>
+        </view>
+        <view class="bio-wrapper">
+          <textarea class="bio-input" placeholder="介绍一下自己吧..." value="{{formData.bio}}" bindinput="onInputChange" data-field="bio" maxlength="100" />
+          <text class="bio-count">{{formData.bio ? formData.bio.length : 0}}/100</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="save-btn" bindtap="saveProfile">保存修改</view>
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

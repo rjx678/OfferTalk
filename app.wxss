@@ -1,0 +1,44 @@
+/**app.wxss**/
+@import './styles/global.wxss';
+
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tab Bar Bottom Padding */
+.tab-bar-page {
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+}
+
+/* 顶部安全区域 */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* 底部安全区域 */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 隐藏 scroll-view 的滚动条 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}

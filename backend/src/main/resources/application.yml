@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: offertalk-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/offertalk?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.offertalk.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+weixin:
+  app-id: wx9893f44dfa1e4d00
+  app-secret: 916f900b48bf9b979bf528ab3b0b0f0f
+
+# 文件上传配置
+app:
+  upload:
+    path: ./uploads/
+    url-prefix: /api/uploads/
+    max-size: 5242880
+    allowed-types: image/jpeg,image/jpg,image/png,image/gif
+    allowed-extensions: jpg,jpeg,png,gif

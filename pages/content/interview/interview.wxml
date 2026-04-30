@@ -1,0 +1,155 @@
+<view class="container">
+  <custom-nav title="面经详情" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+
+  <scroll-view scroll-y class="content-scroll" enhanced="true" show-scrollbar="false" wx:if="{{post}}" bindscroll="onScroll" scroll-top="{{scrollTop}}">
+    <view id="top"></view>
+
+    <view class="article-header">
+      <text class="article-title">{{post.title}}</text>
+      <view class="article-meta">
+        <view class="meta-info">
+          <text class="meta-label">公司：</text>
+          <text class="meta-value">{{post.companyName}}</text>
+        </view>
+        <view class="meta-info">
+          <text class="meta-label">岗位：</text>
+          <text class="meta-value">{{post.jobCategory}}</text>
+        </view>
+        <view class="meta-info">
+          <text class="meta-label">地点：</text>
+          <text class="meta-value">{{post.city}}</text>
+        </view>
+        <view class="meta-info">
+          <text class="meta-label">类型：</text>
+          <text class="meta-value">{{post.recruitType === 1 ? '校招' : post.recruitType === 2 ? '社招' : '实习'}}</text>
+        </view>
+        <view class="meta-info" wx:if="{{post.workExperience}}">
+          <text class="meta-label">工作年限：</text>
+          <text class="meta-value">{{post.workExperience}}</text>
+        </view>
+        <view class="meta-info" wx:if="{{post.status}}">
+          <text class="meta-label">状态：</text>
+          <text class="meta-value status-{{post.status === '已通过' ? 'success' : post.status === '已拒绝' ? 'danger' : 'info'}}">{{post.status}}</text>
+        </view>
+      </view>
+      <view class="article-tags" wx:if="{{post.tags && post.tags.length > 0}}">
+        <text class="tag" wx:for="{{post.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="company-card" bindtap="toCompanyDetail" data-id="{{post.companyId}}">
+      <view class="company-info">
+        <text class="company-name">{{post.companyName}}</text>
+        <text class="company-stage">{{post.companyStage || ''}}</text>
+      </view>
+      <text class="arrow-right">›</text>
+    </view>
+
+    <view class="timeline-section" wx:if="{{post.timelineData}}">
+      <view class="section-header">
+        <text class="section-title">面试时间线</text>
+        <text class="section-count">{{parseTimeline(post.timelineData).length}} 轮</text>
+      </view>
+      <view class="timeline">
+        <view class="timeline-item" wx:for="{{parseTimeline(post.timelineData)}}" wx:key="stage">
+          <view class="timeline-dot"></view>
+          <view class="timeline-content">
+            <view class="timeline-header">
+              <text class="timeline-stage">{{item.stage}}</text>
+              <text class="timeline-date">{{item.date}}</text>
+            </view>
+            <text class="timeline-result {{item.result === '通过' ? 'pass' : 'fail'}}">{{item.result}}</text>
+            <text class="timeline-note" wx:if="{{item.note}}">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="article-content">
+      <view class="section-header">
+        <text class="section-title">面试经验</text>
+      </view>
+      <text class="content-text">{{post.experienceText}}</text>
+    </view>
+
+    <view class="question-section" wx:if="{{post.interviewQuestions}}">
+      <view class="section-header">
+        <text class="section-title">面试问题</text>
+      </view>
+      <view class="question-list">
+        <view class="question-item" wx:for="{{post.interviewQuestions}}" wx:key="index">
+          <text class="question-number">{{index + 1}}.</text>
+          <text class="question-content">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="tip-section" wx:if="{{post.tips}}">
+      <view class="section-header">
+        <text class="section-title">经验总结</text>
+      </view>
+      <text class="tip-text">{{post.tips}}</text>
+    </view>
+
+    <view class="article-footer">
+      <view class="author-info">
+        <text class="author-name">{{post.isAnonymous ? '匿名用户' : '用户' + post.userId}}</text>
+        <text class="post-time">{{post.createTime}}</text>
+      </view>
+      <view class="truth-badge">
+        <text class="badge-label">真实度</text>
+        <text class="badge-value">{{post.truthScore}}</text>
+      </view>
+    </view>
+
+    <view class="comment-section" id="comment-section">
+      <view class="section-header">
+        <text class="section-title">评论</text>
+        <text class="section-count">{{comments.length}}</text>
+      </view>
+      <view class="comment-list">
+        <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+          <view class="comment-header">
+            <text class="comment-author">{{item.isAnonymous ? '匿名' : '用户' + item.userId}}</text>
+            <text class="comment-time">{{item.createTime}}</text>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+          <view class="comment-actions">
+            <text class="action-item" bindtap="handleCommentLike" data-id="{{item.id}}">👍 {{item.likeCount || 0}}</text>
+          </view>
+        </view>
+        <view class="no-comments" wx:if="{{comments.length === 0}}">
+          <text class="no-comments-text">暂无评论，快来发表你的看法吧！</text>
+        </view>
+      </view>
+      <view class="comment-input-area">
+        <input class="comment-input" placeholder="写下你的评论..." bindinput="onCommentInput" value="{{commentContent}}" />
+        <button class="comment-submit" bindtap="handleSubmitComment" disabled="{{!commentContent}}">发送</button>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="action-bar">
+    <view class="action-item {{isLiked ? 'active' : ''}}" bindtap="handleLike">
+      <text class="action-icon">{{isLiked ? '👍' : '🤍'}}</text>
+      <text class="action-text">{{post ? post.likeCount || 0 : 0}}</text>
+    </view>
+    <view class="action-item {{isCollected ? 'active' : ''}}" bindtap="handleCollect">
+      <text class="action-icon">{{isCollected ? '⭐' : '☆'}}</text>
+      <text class="action-text">收藏</text>
+    </view>
+    <view class="action-item" bindtap="handleShare">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+  </view>
+
+  <view class="disclaimer-bottom">
+    <text>声明：内容仅供参考，具体情况以实际为准。</text>
+  </view>
+
+  <view class="quick-nav {{showQuickNav ? 'show' : ''}}" bindtap="scrollToComment">
+    <text class="quick-nav-icon">💬</text>
+    <text class="quick-nav-text">直达评论</text>
+  </view>
+</view>
