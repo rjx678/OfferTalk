@@ -2,7 +2,18 @@
   <custom-nav title="我的评论" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
 
   <scroll-view scroll-y class="content-scroll">
-    <view class="empty-state" wx:if="{{!hasComments}}">
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-icon">⏳</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view class="error-state" wx:elif="{{error}}" bindtap="loadComments">
+      <text class="error-icon">⚠️</text>
+      <text class="error-title">加载失败</text>
+      <text class="error-desc">点击重试</text>
+    </view>
+
+    <view class="empty-state" wx:elif="{{!hasComments}}">
       <text class="empty-icon">💬</text>
       <text class="empty-title">暂无评论内容</text>
       <text class="empty-desc">发表你的看法，参与讨论吧</text>

@@ -6,9 +6,7 @@ Page({
     isLiked: false,
     isCollected: false,
     comments: [],
-    commentContent: '',
-    showQuickNav: false,
-    scrollToView: ''
+    commentContent: ''
   },
 
   onLoad(options) {
@@ -17,26 +15,6 @@ Page({
       this.loadDetail(id);
       this.loadComments(id);
     }
-  },
-
-  onScroll(e) {
-    const scrollTop = e.detail.scrollTop;
-    const showQuickNav = scrollTop > 300;
-    this.setData({ showQuickNav });
-  },
-
-  scrollToComment() {
-    this.setData({ scrollToView: 'comment-section' });
-    setTimeout(() => {
-      this.setData({ scrollToView: '' });
-    }, 500);
-  },
-
-  scrollToTop() {
-    this.setData({ scrollToView: 'top' });
-    setTimeout(() => {
-      this.setData({ scrollToView: '' });
-    }, 500);
   },
 
   loadDetail(id) {
@@ -61,15 +39,25 @@ Page({
       wx.showToast({ title: '请先登录', icon: 'none' });
       return;
     }
+    const review = this.data.review;
+    if (!review || !review.id) {
+      wx.showToast({ title: '数据异常', icon: 'none' });
+      return;
+    }
     request('/like/toggle', 'POST', {
       userId,
       contentType: 3,
-      contentId: this.data.review.id
+      contentId: review.id
     }).then(data => {
-      this.setData({
-        isLiked: data.hasLiked,
-        ['review.likeCount']: this.data.review.likeCount + (data.hasLiked ? 1 : -1)
-      });
+      if (data && data.hasLiked !== undefined) {
+        this.setData({
+          isLiked: data.hasLiked,
+          ['review.likeCount']: (review.likeCount || 0) + (data.hasLiked ? 1 : -1)
+        });
+      }
+    }).catch(err => {
+      console.error('点赞失败:', err);
+      wx.showToast({ title: '操作失败', icon: 'none' });
     });
   },
 
@@ -79,13 +67,23 @@ Page({
       wx.showToast({ title: '请先登录', icon: 'none' });
       return;
     }
+    const review = this.data.review;
+    if (!review || !review.id) {
+      wx.showToast({ title: '数据异常', icon: 'none' });
+      return;
+    }
     request('/collect/toggle', 'POST', {
       userId,
       contentType: 3,
-      contentId: this.data.review.id
+      contentId: review.id
     }).then(data => {
-      this.setData({ isCollected: data.hasCollected });
-      wx.showToast({ title: data.hasCollected ? '收藏成功' : '已取消收藏', icon: 'none' });
+      if (data && data.hasCollected !== undefined) {
+        this.setData({ isCollected: data.hasCollected });
+        wx.showToast({ title: data.hasCollected ? '收藏成功' : '已取消收藏', icon: 'none' });
+      }
+    }).catch(err => {
+      console.error('收藏失败:', err);
+      wx.showToast({ title: '操作失败', icon: 'none' });
     });
   },
 

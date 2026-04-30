@@ -7,6 +7,8 @@ import com.offertalk.mapper.CommentMapper;
 import com.offertalk.mapper.LikeRecordMapper;
 import com.offertalk.mapper.CollectRecordMapper;
 import com.offertalk.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +25,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Autowired
     private SysUserService sysUserService;
@@ -55,17 +61,45 @@ public class UserController {
 
     @PostMapping("/login")
     public ApiResponse<Map<String, Object>> login(@RequestBody Map<String, String> params) {
+        String requestId = java.util.UUID.randomUUID().toString().substring(0, 8);
+        String timestamp = LocalDateTime.now().format(formatter);
+
+        logger.info("========== 用户登录请求开始 ==========");
+        logger.info("[{}] 请求时间: {}", requestId, timestamp);
+        logger.info("[{}] 请求参数: {}", requestId, params);
+
         String code = params.get("code");
+
         if (code == null || code.isEmpty()) {
+            logger.warn("[{}] 登录失败: 缺少code参数", requestId);
             return ApiResponse.error(400, "缺少code参数");
         }
 
+        logger.info("[{}] 获取到code: {}", requestId, code.substring(0, Math.min(10, code.length())) + "...");
+
         try {
+            logger.info("[{}] 开始调用微信登录服务", requestId);
+
             String openid = weixinService.getOpenid(code);
-            
+
+            logger.info("[{}] 微信登录成功，openid: {}", requestId, openid != null ? openid.substring(0, 10) + "..." : "null");
+            logger.info("[{}] 开始查询/创建用户", requestId);
+
             SysUser user = sysUserService.getOrCreateUserByOpenid(openid);
+
+            if (user == null) {
+                logger.error("[{}] 用户查询/创建失败", requestId);
+                return ApiResponse.error(500, "用户创建失败");
+            }
+
+            logger.info("[{}] 用户信息: id={}, nickname={}", requestId, user.getId(), user.getNickname());
+
             user.setLastLoginTime(LocalDateTime.now());
-            sysUserService.updateById(user);
+            boolean updateSuccess = sysUserService.updateById(user);
+
+            if (!updateSuccess) {
+                logger.warn("[{}] 更新用户登录时间失败", requestId);
+            }
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("id", user.getId());
@@ -79,10 +113,19 @@ public class UserController {
             userInfo.put("totalLikeCount", user.getTotalLikeCount());
             userInfo.put("createTime", user.getCreateTime());
 
+            logger.info("[{}] 登录成功，返回用户信息", requestId);
+            logger.info("[{}] 用户登录请求结束 ==========", requestId);
+
             return ApiResponse.success(userInfo);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return ApiResponse.error(500, "微信登录失败");
+            logger.error("[{}] 登录异常", requestId);
+            logger.error("[{}] 异常类型: {}", requestId, e.getClass().getName());
+            logger.error("[{}] 异常消息: {}", requestId, e.getMessage());
+            logger.error("[{}] 异常堆栈:", requestId, e);
+            logger.info("[{}] 用户登录请求结束(失败) ==========", requestId);
+
+            return ApiResponse.error(500, "微信登录失败: " + e.getMessage());
         }
     }
 
@@ -119,34 +162,58 @@ public class UserController {
         String newFilename = java.util.UUID.randomUUID().toString() + extension;
 
         try {
-            java.io.File uploadDir = new java.io.File(uploadPath + "/avatars");
+            java.nio.file.Path uploadPathAbs = java.nio.file.Paths.get(uploadPath).toAbsolutePath().normalize();
+            java.io.File uploadDir = new java.io.File(uploadPathAbs.toFile(), "avatars");
+
             if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+                boolean created = uploadDir.mkdirs();
+                logger.info("创建头像目录: {}，结果: {}", uploadDir.getAbsolutePath(), created);
+            }
+
+            if (!uploadDir.exists() || !uploadDir.isDirectory()) {
+                logger.error("头像目录创建失败或不存在: {}", uploadDir.getAbsolutePath());
+                return ApiResponse.error(500, "上传目录创建失败");
             }
 
             String dateDir = java.time.LocalDate.now().toString().replace("-", "/");
             java.io.File dateDirFile = new java.io.File(uploadDir, dateDir);
+
             if (!dateDirFile.exists()) {
-                dateDirFile.mkdirs();
+                boolean created = dateDirFile.mkdirs();
+                logger.info("创建日期目录: {}，结果: {}", dateDirFile.getAbsolutePath(), created);
+            }
+
+            if (!dateDirFile.exists() || !dateDirFile.isDirectory()) {
+                logger.error("日期目录创建失败或不存在: {}", dateDirFile.getAbsolutePath());
+                return ApiResponse.error(500, "上传目录创建失败");
             }
 
             java.io.File dest = new java.io.File(dateDirFile, newFilename);
+            logger.info("准备保存文件到: {}", dest.getAbsolutePath());
+
             file.transferTo(dest);
 
-            String avatarUrl = urlPrefix + "/avatars/" + dateDir + "/" + newFilename;
+            if (!dest.exists()) {
+                logger.error("文件保存失败，目标文件不存在: {}", dest.getAbsolutePath());
+                return ApiResponse.error(500, "文件保存失败");
+            }
+
+            String avatarUrl = urlPrefix + "avatars/" + dateDir + "/" + newFilename;
+            logger.info("头像上传成功，URL: {}", avatarUrl);
 
             SysUser user = sysUserService.getById(userId);
             if (user != null) {
                 user.setAvatarUrl(avatarUrl);
                 sysUserService.updateById(user);
+                logger.info("用户头像更新成功，userId: {}", userId);
             }
 
             Map<String, Object> result = new HashMap<>();
             result.put("avatarUrl", avatarUrl);
             return ApiResponse.success(result);
         } catch (IOException e) {
-            e.printStackTrace();
-            return ApiResponse.error(500, "上传失败");
+            logger.error("头像上传异常", e);
+            return ApiResponse.error(500, "上传失败: " + e.getMessage());
         }
     }
 
@@ -181,7 +248,7 @@ public class UserController {
         salaries.forEach(salary -> {
             Map<String, Object> post = new HashMap<>();
             post.put("id", salary.getId());
-            post.put("title", salary.getJobCategory() + "薪资爆料");
+            post.put("title", salary.getTitle());
             post.put("content", "月薪: " + salary.getMonthlyBase() + " | 总包: " + salary.getTotalPackage());
             post.put("typeName", "薪资");
             post.put("type", 2);
@@ -200,7 +267,7 @@ public class UserController {
         reviews.forEach(review -> {
             Map<String, Object> post = new HashMap<>();
             post.put("id", review.getId());
-            post.put("title", review.getCompanyName() + "评价");
+            post.put("title", review.getTitle());
             post.put("content", "优点: " + review.getProsText() + " | 缺点: " + review.getConsText());
             post.put("typeName", "评价");
             post.put("type", 3);
@@ -270,13 +337,13 @@ public class UserController {
             } else if (like.getContentType() == 2) {
                 SalaryDisclosure salary = salaryDisclosureService.getById(like.getContentId());
                 if (salary != null) {
-                    item.put("title", salary.getJobCategory() + "薪资爆料");
+                    item.put("title", salary.getTitle());
                     item.put("typeName", "薪资");
                 }
             } else if (like.getContentType() == 3) {
                 CompanyReview review = companyReviewService.getById(like.getContentId());
                 if (review != null) {
-                    item.put("title", review.getCompanyName() + "评价");
+                    item.put("title", review.getTitle());
                     item.put("typeName", "评价");
                 }
             }
@@ -317,7 +384,7 @@ public class UserController {
             } else if (collect.getContentType() == 2) {
                 SalaryDisclosure salary = salaryDisclosureService.getById(collect.getContentId());
                 if (salary != null) {
-                    item.put("title", salary.getJobCategory() + "薪资爆料");
+                    item.put("title", salary.getTitle());
                     item.put("content", "月薪: " + salary.getMonthlyBase() + " | 总包: " + salary.getTotalPackage());
                     item.put("typeName", "薪资");
                     item.put("type", 2);
@@ -328,7 +395,7 @@ public class UserController {
             } else if (collect.getContentType() == 3) {
                 CompanyReview review = companyReviewService.getById(collect.getContentId());
                 if (review != null) {
-                    item.put("title", review.getCompanyName() + "评价");
+                    item.put("title", review.getTitle());
                     item.put("content", "优点: " + review.getProsText() + " | 缺点: " + review.getConsText());
                     item.put("typeName", "评价");
                     item.put("type", 3);
@@ -341,5 +408,31 @@ public class UserController {
         }
 
         return ApiResponse.success(collectList);
+    }
+
+    @PostMapping("/collections/cancel")
+    public ApiResponse<String> cancelCollection(@RequestBody Map<String, Object> params) {
+        try {
+            Long collectId = params.containsKey("collectId") ? Long.parseLong(params.get("collectId").toString()) : null;
+
+            logger.info("取消收藏请求 - collectId: {}", collectId);
+
+            if (collectId == null) {
+                logger.warn("取消收藏参数缺失 - collectId: {}", collectId);
+                return ApiResponse.error(400, "收藏ID不能为空");
+            }
+
+            collectRecordMapper.deleteById(collectId);
+
+            logger.info("取消收藏成功 - collectId: {}", collectId);
+            return ApiResponse.success("取消成功");
+
+        } catch (NumberFormatException e) {
+            logger.error("取消收藏参数格式错误", e);
+            return ApiResponse.error(400, "参数格式错误");
+        } catch (Exception e) {
+            logger.error("取消收藏失败", e);
+            return ApiResponse.error(500, "取消失败: " + e.getMessage());
+        }
     }
 }

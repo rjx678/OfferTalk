@@ -23,8 +23,8 @@ server:
     context-path: /api
 
 weixin:
-  app-id: wx9893f44dfa1e4d00
-  app-secret: 916f900b48bf9b979bf528ab3b0b0f0f
+  app-id: your appid
+  app-secret: your appsecret
 
 # 文件上传配置
 app:

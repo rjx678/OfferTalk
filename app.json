@@ -18,6 +18,7 @@
     "pages/mine/about/about",
     "pages/comment/index",
     "pages/tools/salary-calculator/salary-calculator",
+    "pages/tools/city-selector/city-selector",
     "pages/tools/company-compare/company-compare",
     "pages/tools/career-path/career-path",
     "pages/tools/feedback/feedback"

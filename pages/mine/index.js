@@ -26,11 +26,20 @@ Page({
     ]
   },
 
+  // 缓存对象
+  cache: {
+    stats: null,
+    cacheTime: null,
+    cacheDuration: 5 * 60 * 1000 // 5分钟缓存
+  },
+
   onLoad() {
     this.checkLoginStatus();
   },
 
   onShow() {
+    this.cache.stats = null;
+    this.cache.cacheTime = null;
     this.checkLoginStatus();
   },
 
@@ -43,13 +52,50 @@ Page({
         hasLogin: true,
         displayAvatarUrl: getFullImageUrl(avatarUrl)
       });
+      this.loadUserStats(userInfo.id);
     } else {
       this.setData({
         userInfo: null,
         hasLogin: false,
-        displayAvatarUrl: ''
+        displayAvatarUrl: '',
+        contentItems: [
+          { id: 'posts', name: '我的发布', icon: '📝', count: 0 },
+          { id: 'collections', name: '我的收藏', icon: '⭐', count: 0 },
+          { id: 'likes', name: '我的点赞', icon: '👍', count: 0 },
+          { id: 'comments', name: '我的评论', icon: '💬', count: 0 }
+        ]
       });
     }
+  },
+
+  loadUserStats(userId) {
+    // 检查缓存
+    const now = Date.now();
+    if (this.cache.stats && 
+        this.cache.userId === userId && 
+        this.cache.cacheTime && 
+        now - this.cache.cacheTime < this.cache.cacheDuration) {
+      // 使用缓存数据
+      const contentItems = this.cache.stats;
+      this.setData({ contentItems });
+      return;
+    }
+
+    request('/user/settings/profile', 'GET', { userId }).then(data => {
+      const contentItems = [
+        { id: 'posts', name: '我的发布', icon: '📝', count: data.totalPostCount || 0 },
+        { id: 'collections', name: '我的收藏', icon: '⭐', count: data.totalCollectCount || 0 },
+        { id: 'likes', name: '我的点赞', icon: '👍', count: data.totalLikeCount || 0 },
+        { id: 'comments', name: '我的评论', icon: '💬', count: data.totalCommentCount || 0 }
+      ];
+      this.setData({ contentItems });
+      // 更新缓存
+      this.cache.stats = contentItems;
+      this.cache.userId = userId;
+      this.cache.cacheTime = now;
+    }).catch(() => {
+      console.log('获取用户统计数据失败');
+    });
   },
 
   doLogin() {
@@ -58,20 +104,22 @@ Page({
       success: res => {
         if (res.code) {
           request('/user/login', 'POST', { code: res.code }).then(userData => {
-            wx.hideLoading();
-            const avatarUrl = userData.avatarUrl || '';
-            userData.displayAvatarUrl = getFullImageUrl(avatarUrl);
-            getApp().globalData.userInfo = userData;
-            this.setData({
-              userInfo: userData,
-              hasLogin: true,
-              displayAvatarUrl: userData.displayAvatarUrl
-            });
-            wx.showToast({ title: '登录成功', icon: 'success' });
-          }).catch(() => {
-            wx.hideLoading();
-            wx.showToast({ title: '登录失败', icon: 'none' });
+          wx.hideLoading();
+          const avatarUrl = userData.avatarUrl || '';
+          userData.displayAvatarUrl = getFullImageUrl(avatarUrl);
+          getApp().globalData.userInfo = userData;
+          this.setData({
+            userInfo: userData,
+            hasLogin: true,
+            displayAvatarUrl: userData.displayAvatarUrl
           });
+          // 登录成功后立即加载用户统计数据
+          this.loadUserStats(userData.id);
+          wx.showToast({ title: '登录成功', icon: 'success' });
+        }).catch(() => {
+          wx.hideLoading();
+          wx.showToast({ title: '登录失败', icon: 'none' });
+        });
         } else {
           wx.hideLoading();
           wx.showToast({ title: '登录失败', icon: 'none' });

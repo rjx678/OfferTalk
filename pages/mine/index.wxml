@@ -21,38 +21,26 @@
     </view>
   </view>
 
-  <view class="content-section">
-    <view class="section-header">
-      <text class="section-title">我的内容</text>
-    </view>
-    <view class="content-grid">
-      <view class="content-card" bindtap="navigateToMyPosts">
-        <view class="card-icon">📝</view>
-        <view class="card-info">
-          <text class="card-name">我的发布</text>
-          <text class="card-count" wx:if="{{userInfo && userInfo.totalPostCount > 0}}">{{userInfo && userInfo.totalPostCount}}条</text>
-        </view>
+  <view class="stats-section" wx:if="{{hasLogin}}">
+    <view class="stats-grid">
+      <view class="stat-item" bindtap="navigateToMyPosts">
+        <text class="stat-value">{{contentItems[0].count}}</text>
+        <text class="stat-label">发布</text>
       </view>
-      <view class="content-card" bindtap="navigateToMyCollects">
-        <view class="card-icon">⭐</view>
-        <view class="card-info">
-          <text class="card-name">我的收藏</text>
-          <text class="card-count" wx:if="{{userInfo && userInfo.totalCollectCount > 0}}">{{userInfo && userInfo.totalCollectCount}}条</text>
-        </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="navigateToMyCollects">
+        <text class="stat-value">{{contentItems[1].count}}</text>
+        <text class="stat-label">收藏</text>
       </view>
-      <view class="content-card" bindtap="navigateToMyComments">
-        <view class="card-icon">💬</view>
-        <view class="card-info">
-          <text class="card-name">我的评论</text>
-          <text class="card-count" wx:if="{{userInfo && userInfo.totalCommentCount > 0}}">{{userInfo && userInfo.totalCommentCount}}条</text>
-        </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="navigateToMyComments">
+        <text class="stat-value">{{contentItems[3].count}}</text>
+        <text class="stat-label">评论</text>
       </view>
-      <view class="content-card" bindtap="navigateToMyLikes">
-        <view class="card-icon">👍</view>
-        <view class="card-info">
-          <text class="card-name">我的点赞</text>
-          <text class="card-count" wx:if="{{userInfo && userInfo.totalLikeCount > 0}}">{{userInfo && userInfo.totalLikeCount}}条</text>
-        </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="navigateToMyLikes">
+        <text class="stat-value">{{contentItems[2].count}}</text>
+        <text class="stat-label">点赞</text>
       </view>
     </view>
   </view>

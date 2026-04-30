@@ -8,12 +8,12 @@ import com.offertalk.controller.dto.response.AppVersionResponse;
 import com.offertalk.controller.dto.response.NotificationSettingsResponse;
 import com.offertalk.controller.dto.response.PrivacySettingsResponse;
 import com.offertalk.controller.dto.response.UserProfileResponse;
-import com.offertalk.entity.SysUser;
-import com.offertalk.entity.UserSettings;
+import com.offertalk.entity.*;
+import com.offertalk.mapper.CollectRecordMapper;
+import com.offertalk.mapper.CommentMapper;
+import com.offertalk.mapper.LikeRecordMapper;
 import com.offertalk.mapper.UserSettingsMapper;
-import com.offertalk.service.UserSettingsService;
-import com.offertalk.service.SysUserService;
-import org.springframework.beans.BeanUtils;
+import com.offertalk.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,24 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private InterviewExperienceService interviewExperienceService;
+
+    @Autowired
+    private SalaryDisclosureService salaryDisclosureService;
+
+    @Autowired
+    private CompanyReviewService companyReviewService;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
+    private CollectRecordMapper collectRecordMapper;
+
+    @Autowired
+    private LikeRecordMapper likeRecordMapper;
 
     @Value("${app.version:1.0.0}")
     private String appVersion;
@@ -46,8 +64,43 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         response.setAvatarUrl(user.getAvatarUrl());
         response.setPhone(user.getPhone());
         response.setBio(getOrCreateUserSettings(userId).getBio());
-        response.setTotalPostCount(user.getTotalPostCount());
-        response.setTotalLikeCount(user.getTotalLikeCount());
+
+        int totalPostCount = 0;
+        int totalCollectCount = 0;
+        int totalCommentCount = 0;
+        int totalLikeCount = 0;
+
+        LambdaQueryWrapper<InterviewExperience> expWrapper = new LambdaQueryWrapper<>();
+        expWrapper.eq(InterviewExperience::getUserId, userId)
+                .eq(InterviewExperience::getIsDeleted, 0);
+        totalPostCount += interviewExperienceService.count(expWrapper);
+
+        LambdaQueryWrapper<SalaryDisclosure> salaryWrapper = new LambdaQueryWrapper<>();
+        salaryWrapper.eq(SalaryDisclosure::getUserId, userId)
+                .eq(SalaryDisclosure::getIsDeleted, 0);
+        totalPostCount += salaryDisclosureService.count(salaryWrapper);
+
+        LambdaQueryWrapper<CompanyReview> reviewWrapper = new LambdaQueryWrapper<>();
+        reviewWrapper.eq(CompanyReview::getUserId, userId)
+                .eq(CompanyReview::getIsDeleted, 0);
+        totalPostCount += companyReviewService.count(reviewWrapper);
+
+        LambdaQueryWrapper<CollectRecord> collectWrapper = new LambdaQueryWrapper<>();
+        collectWrapper.eq(CollectRecord::getUserId, userId);
+        totalCollectCount = Math.toIntExact(collectRecordMapper.selectCount(collectWrapper));
+
+        LambdaQueryWrapper<Comment> commentWrapper = new LambdaQueryWrapper<>();
+        commentWrapper.eq(Comment::getUserId, userId);
+        totalCommentCount = Math.toIntExact(commentMapper.selectCount(commentWrapper));
+
+        LambdaQueryWrapper<LikeRecord> likeWrapper = new LambdaQueryWrapper<>();
+        likeWrapper.eq(LikeRecord::getUserId, userId);
+        totalLikeCount = Math.toIntExact(likeRecordMapper.selectCount(likeWrapper));
+
+        response.setTotalPostCount(totalPostCount);
+        response.setTotalLikeCount(totalLikeCount);
+        response.setTotalCollectCount(totalCollectCount);
+        response.setTotalCommentCount(totalCommentCount);
 
         return response;
     }

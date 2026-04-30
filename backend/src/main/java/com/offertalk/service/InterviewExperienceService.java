@@ -14,5 +14,4 @@ public interface InterviewExperienceService extends IService<InterviewExperience
     void updateLikeCount(Long id, Integer delta);
     void updateCommentCount(Long id, Integer delta);
     void updateTruthScore(Long id, Double score);
-    List<InterviewExperience> getHotExperiences(Integer limit);
 }

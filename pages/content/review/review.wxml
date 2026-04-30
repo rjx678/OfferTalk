@@ -1,7 +1,7 @@
 <view class="container">
   <custom-nav title="公司评价" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
 
-  <scroll-view scroll-y class="content-scroll" enhanced="true" show-scrollbar="false" wx:if="{{review}}" bindscroll="onScroll" scroll-into-view="{{scrollToView}}" scroll-with-animation="true">
+  <scroll-view scroll-y class="content-scroll" enhanced="true" show-scrollbar="false" wx:if="{{review}}">
     <view id="top"></view>
 
     <view class="review-header">
@@ -188,10 +188,5 @@
       <text class="action-icon">📤</text>
       <text class="action-text">分享</text>
     </view>
-  </view>
-
-  <view class="quick-nav {{showQuickNav ? 'show' : ''}}" bindtap="scrollToComment">
-    <text class="quick-nav-icon">💬</text>
-    <text class="quick-nav-text">直达评论</text>
   </view>
 </view>

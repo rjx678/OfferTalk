@@ -52,11 +52,4 @@ public class PostController {
         result.put("id", id);
         return ApiResponse.success("发布成功，请等待审核", result);
     }
-
-    @GetMapping("/interview/hot")
-    public ApiResponse<List<InterviewExperience>> getHotInterviews(
-            @RequestParam(defaultValue = "10") Integer limit) {
-        List<InterviewExperience> hotList = interviewExperienceService.getHotExperiences(limit);
-        return ApiResponse.success(hotList);
-    }
 }

@@ -3,11 +3,20 @@ const { request } = require('../../../utils/request.js');
 Page({
   data: {
     postList: [],
-    hasPosts: false
+    hasPosts: false,
+    loading: false,
+    error: false
   },
 
   onLoad() {
     this.loadPosts();
+  },
+
+  onShow() {
+    // 每次显示时刷新数据
+    if (this.data.hasPosts || this.data.error) {
+      this.loadPosts();
+    }
   },
 
   loadPosts() {
@@ -16,16 +25,49 @@ Page({
       return;
     }
 
+    this.setData({ loading: true, error: false });
+
     request('/user/posts', 'GET', { userId: userInfo.id }).then(data => {
       const list = data || [];
+      
+      // 格式化显示内容
+      list.forEach(item => {
+        if (!item.title) {
+          if (item.type === 1) {
+            item.title = '面经分享';
+          } else if (item.type === 2) {
+            item.title = '薪资爆料';
+          } else if (item.type === 3) {
+            item.title = '公司评价';
+          }
+        }
+        if (!item.typeName) {
+          if (item.type === 1) {
+            item.typeName = '面经';
+          } else if (item.type === 2) {
+            item.typeName = '薪资';
+          } else if (item.type === 3) {
+            item.typeName = '评价';
+          }
+        }
+      });
+      
       this.setData({
         postList: list,
-        hasPosts: list.length > 0
+        hasPosts: list.length > 0,
+        loading: false
       });
     }).catch(() => {
       this.setData({
         postList: [],
-        hasPosts: false
+        hasPosts: false,
+        loading: false,
+        error: true
+      });
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none',
+        duration: 2000
       });
     });
   },

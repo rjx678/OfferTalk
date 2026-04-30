@@ -1,18 +1,18 @@
 <view class="container">
-  <custom-nav title="个人资料" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
+    <custom-nav title="个人资料" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
 
-  <scroll-view scroll-y class="content-scroll">
-    <view class="section">
-      <view class="avatar-section">
-        <view class="avatar-wrapper" bindtap="changeAvatar">
-          <image class="avatar" src="{{displayAvatarUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
-          <view class="avatar-mask">
-            <text class="camera-icon">📷</text>
-            <text class="change-text">更换头像</text>
+    <scroll-view scroll-y class="content-scroll">
+      <view class="section">
+        <view class="avatar-section">
+          <view class="avatar-wrapper" bindtap="changeAvatar">
+            <image class="avatar" src="{{displayAvatarUrl || '/images/default-avatar.jpeg'}}" mode="aspectFill" />
+            <view class="avatar-mask">
+              <text class="camera-icon">📷</text>
+              <text class="change-text">更换头像</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
 
     <view class="section">
       <view class="settings-card">

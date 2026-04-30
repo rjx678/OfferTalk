@@ -56,6 +56,8 @@ public class SalaryDisclosure extends BaseEntity {
     private Integer isHot;
     private Integer isDeleted;
     @TableField(exist = false)
+    private String userName;
+    @TableField(exist = false)
     private String companyName;
     @TableField(exist = false)
     private String companyLogo;

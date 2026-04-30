@@ -1,153 +1,297 @@
 <view class="container">
   <custom-nav title="薪资计算器" back="{{true}}" background="#3366ff" color="#ffffff"></custom-nav>
   
-  <scroll-view scroll-y class="content-scroll">
+  <scroll-view scroll-y class="content-scroll" enhanced show-scrollbar>
     <!-- 城市选择 -->
     <view class="section">
-      <view class="section-title">选择城市</view>
-      <scroll-view scroll-x class="city-scroll">
-        <view wx:for="{{cities}}" wx:key="cityCode" 
-              bindtap="selectCity" data-code="{{item.cityCode}}"
-              class="city-tag {{selectedCity === item.cityCode ? 'active' : ''}}">
-          {{item.cityName}}
+      <view class="section-header">
+        <text class="section-title">选择城市</text>
+        <view class="city-badge" wx:if="{{selectedCityName}}">{{selectedCityName}}</view>
+      </view>
+      <view class="city-selector" bindtap="openCitySelector">
+        <view class="city-display">
+          <text class="city-name">{{selectedCityName || '请选择城市'}}</text>
         </view>
-      </scroll-view>
+        <view class="arrow-icon">
+          <text>›</text>
+        </view>
+      </view>
     </view>
 
     <!-- 基本信息 -->
     <view class="section">
-      <view class="section-title">基本信息</view>
-      
-      <view class="form-item">
-        <text class="label">月薪（元）</text>
-        <input class="input" type="number" placeholder="请输入月薪" 
-               bindinput="onInputChange" data-field="monthlyBase" />
+      <view class="section-header">
+        <text class="section-title">基本信息</text>
       </view>
       
       <view class="form-item">
-        <text class="label">年薪形式</text>
+        <view class="form-label">
+          <text class="label-text">月薪（元）</text>
+          <text class="required">*</text>
+        </view>
+        <view class="form-input-wrap">
+          <text class="input-prefix">¥</text>
+          <input class="input-field" type="digit" placeholder="请输入月薪" 
+                 value="{{formData.monthlyBase}}"
+                 bindinput="onInputChange" data-field="monthlyBase" />
+        </view>
+      </view>
+      
+      <view class="form-item">
+        <text class="label-text">年薪形式</text>
         <picker mode="selector" range="{{salaryMonthOptions}}" bindchange="onSalaryMonthChange">
-          <view class="picker-value">
-            {{selectedSalaryMonth === 0 ? '请选择' : salaryMonthOptions[selectedSalaryMonth - 1]}}
-            <text class="arrow">›</text>
+          <view class="picker-content">
+            <text class="picker-text">{{selectedSalaryMonth === 0 ? '请选择' : salaryMonthOptions[selectedSalaryMonth - 1]}}</text>
+            <text class="picker-arrow">›</text>
           </view>
         </picker>
       </view>
       
       <view class="form-item">
-        <text class="label">年终奖（元）</text>
-        <input class="input" type="number" placeholder="请输入年终奖" 
-               bindinput="onInputChange" data-field="annualBonus" />
+        <text class="label-text">年终奖（元）</text>
+        <view class="form-input-wrap">
+          <text class="input-prefix">¥</text>
+          <input class="input-field" type="digit" placeholder="0" 
+                 value="{{formData.annualBonus}}"
+                 bindinput="onInputChange" data-field="annualBonus" />
+        </view>
       </view>
     </view>
 
     <!-- 股票期权 -->
     <view class="section">
-      <view class="section-title">股票期权（可选）</view>
+      <view class="section-header">
+        <text class="section-title">股票期权</text>
+        <text class="optional">(可选)</text>
+      </view>
       
       <view class="form-item">
-        <text class="label">RSU数量</text>
-        <input class="input" type="number" placeholder="0" 
+        <text class="label-text">RSU数量</text>
+        <input class="input-field input-right" type="number" placeholder="0" 
+               value="{{formData.rsuCount}}"
                bindinput="onInputChange" data-field="rsuCount" />
       </view>
       
       <view class="form-item">
-        <text class="label">RSU单价（元）</text>
-        <input class="input" type="number" placeholder="0" 
-               bindinput="onInputChange" data-field="rsuPrice" />
+        <text class="label-text">RSU单价（元）</text>
+        <view class="form-input-wrap">
+          <text class="input-prefix">¥</text>
+          <input class="input-field" type="digit" placeholder="0" 
+                 value="{{formData.rsuPrice}}"
+                 bindinput="onInputChange" data-field="rsuPrice" />
+        </view>
       </view>
     </view>
 
     <!-- 社保公积金设置 -->
     <view class="section">
-      <view class="section-title">社保公积金设置</view>
+      <view class="section-header">
+        <text class="section-title">社保公积金设置</text>
+      </view>
       
-      <view class="form-item">
-        <text class="label">养老保险 {{currentConfig.pensionRatio}}%</text>
-        <slider class="slider" min="5" max="12" step="0.5" 
-                value="{{currentConfig.pensionRatio}}" 
+      <view class="slider-item">
+        <view class="slider-label">
+          <text class="label-text">养老保险</text>
+          <text class="ratio-value">{{currentConfig.pensionRatio}}%</text>
+        </view>
+        <slider class="slider-field" min="5" max="12" step="0.5" 
+                value="{{currentConfig.pensionRatio}}" activeColor="#3366ff" backgroundColor="#e8e8e8"
                 bindchange="onSliderChange" data-field="pensionRatio" />
       </view>
       
-      <view class="form-item">
-        <text class="label">医疗保险 {{currentConfig.medicalRatio}}%</text>
-        <slider class="slider" min="1" max="5" step="0.5" 
-                value="{{currentConfig.medicalRatio}}" 
+      <view class="slider-item">
+        <view class="slider-label">
+          <text class="label-text">医疗保险</text>
+          <text class="ratio-value">{{currentConfig.medicalRatio}}%</text>
+        </view>
+        <slider class="slider-field" min="1" max="5" step="0.5" 
+                value="{{currentConfig.medicalRatio}}" activeColor="#3366ff" backgroundColor="#e8e8e8"
                 bindchange="onSliderChange" data-field="medicalRatio" />
       </view>
       
-      <view class="form-item">
-        <text class="label">失业保险 {{currentConfig.unemploymentRatio}}%</text>
-        <slider class="slider" min="0" max="1" step="0.1" 
-                value="{{currentConfig.unemploymentRatio}}" 
+      <view class="slider-item">
+        <view class="slider-label">
+          <text class="label-text">失业保险</text>
+          <text class="ratio-value">{{currentConfig.unemploymentRatio}}%</text>
+        </view>
+        <slider class="slider-field" min="0" max="1" step="0.1" 
+                value="{{currentConfig.unemploymentRatio}}" activeColor="#3366ff" backgroundColor="#e8e8e8"
                 bindchange="onSliderChange" data-field="unemploymentRatio" />
       </view>
       
-      <view class="form-item">
-        <text class="label">公积金 {{currentConfig.housingFundRatio}}%</text>
-        <slider class="slider" min="5" max="12" step="1" 
-                value="{{currentConfig.housingFundRatio}}" 
+      <view class="slider-item">
+        <view class="slider-label">
+          <text class="label-text">公积金</text>
+          <text class="ratio-value">{{currentConfig.housingFundRatio}}%</text>
+        </view>
+        <slider class="slider-field" min="5" max="12" step="1" 
+                value="{{currentConfig.housingFundRatio}}" activeColor="#3366ff" backgroundColor="#e8e8e8"
                 bindchange="onSliderChange" data-field="housingFundRatio" />
       </view>
     </view>
 
     <!-- 计算按钮 -->
-    <view class="calculate-btn" bindtap="calculate">计算薪资</view>
+    <view class="calculate-section">
+      <view class="calculate-btn" bindtap="calculate">
+        <text class="btn-text">计算薪资</text>
+      </view>
+    </view>
 
     <!-- 计算结果 -->
-    <view class="result-section" wx:if="{{result}}">
-      <view class="section-title">计算结果</view>
+    <view class="result-section" wx:if="{{result && showResult}}">
+      <view class="section-header">
+        <text class="section-title">计算结果</text>
+        <view class="result-badge">
+          <text>基于{{selectedCityName || '当前城市'}}标准</text>
+        </view>
+      </view>
       
+      <!-- 核心结果卡片 -->
       <view class="result-card">
-        <view class="result-row">
-          <text class="result-label">税前年薪</text>
-          <text class="result-value">¥{{formatNumber(result.grossAnnualSalary)}}</text>
+        <view class="result-main">
+          <view class="main-item">
+            <text class="main-label">税后年薪</text>
+            <view class="main-value-wrap">
+              <text class="value-symbol">¥</text>
+              <text class="value-amount">{{formattedResult.netAnnualSalary}}</text>
+            </view>
+          </view>
+          <view class="main-divider"></view>
+          <view class="main-item">
+            <text class="main-label">税后月薪</text>
+            <view class="main-value-wrap">
+              <text class="value-symbol">¥</text>
+              <text class="value-amount">{{formattedResult.netMonthlySalary}}</text>
+            </view>
+          </view>
         </view>
-        <view class="result-row highlight">
-          <text class="result-label">税后年薪</text>
-          <text class="result-value">¥{{formatNumber(result.netAnnualSalary)}}</text>
-        </view>
-        <view class="result-row">
-          <text class="result-label">税后月薪</text>
-          <text class="result-value">¥{{formatNumber(result.netMonthlySalary)}}</text>
-        </view>
-        <view class="result-row">
-          <text class="result-label">年度个税</text>
-          <text class="result-value">¥{{formatNumber(result.annualTax)}}</text>
+        
+        <view class="result-secondary">
+          <view class="secondary-item">
+            <text class="secondary-label">税前年薪</text>
+            <text class="secondary-value">¥{{formattedResult.grossAnnualSalary}}</text>
+          </view>
+          <view class="secondary-item">
+            <text class="secondary-label">年度个税</text>
+            <text class="secondary-value text-red">¥{{formattedResult.annualTax}}</text>
+          </view>
+          <view class="secondary-item">
+            <text class="secondary-label">社保/年</text>
+            <text class="secondary-value">¥{{formattedResult.annualSocialInsurance}}</text>
+          </view>
+          <view class="secondary-item">
+            <text class="secondary-label">公积金/年</text>
+            <text class="secondary-value">¥{{formattedResult.annualHousingFund}}</text>
+          </view>
         </view>
       </view>
 
-      <!-- 月度明细 -->
+      <!-- 月度明细卡片 -->
       <view class="detail-card">
-        <view class="detail-header">月度明细</view>
+        <view class="detail-header">
+          <text class="detail-title">月度明细</text>
+          <text class="detail-subtitle">单位：元</text>
+        </view>
+        
         <view class="detail-grid">
-          <view class="detail-item">
+          <view class="detail-item income">
+            <view class="detail-icon">↑</view>
             <text class="detail-label">应发工资</text>
-            <text class="detail-value">¥{{formatNumber(result.monthlyDetail.grossSalary)}}</text>
+            <text class="detail-value text-green">+¥{{formattedResult.monthlyDetail.grossSalary}}</text>
           </view>
+          
           <view class="detail-item">
             <text class="detail-label">养老保险</text>
-            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.pension)}}</text>
+            <text class="detail-value text-red">-¥{{formattedResult.monthlyDetail.pension}}</text>
           </view>
+          
           <view class="detail-item">
             <text class="detail-label">医疗保险</text>
-            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.medical)}}</text>
+            <text class="detail-value text-red">-¥{{formattedResult.monthlyDetail.medical}}</text>
           </view>
+          
           <view class="detail-item">
             <text class="detail-label">失业保险</text>
-            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.unemployment)}}</text>
+            <text class="detail-value text-red">-¥{{formattedResult.monthlyDetail.unemployment}}</text>
           </view>
+          
           <view class="detail-item">
             <text class="detail-label">公积金</text>
-            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.housingFund)}}</text>
+            <text class="detail-value text-red">-¥{{formattedResult.monthlyDetail.housingFund}}</text>
           </view>
+          
           <view class="detail-item">
             <text class="detail-label">个税</text>
-            <text class="detail-value">-¥{{formatNumber(result.monthlyDetail.tax)}}</text>
+            <text class="detail-value text-red">-¥{{formattedResult.monthlyDetail.tax}}</text>
           </view>
+          
           <view class="detail-item total">
+            <view class="detail-icon highlight">✓</view>
             <text class="detail-label">实发工资</text>
-            <text class="detail-value">¥{{formatNumber(result.monthlyDetail.netSalary)}}</text>
+            <text class="detail-value text-highlight">¥{{formattedResult.monthlyDetail.netSalary}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 构成比例 -->
+      <view class="composition-card" wx:if="{{result.composition}}">
+        <view class="detail-header">
+          <text class="detail-title">薪资构成</text>
+        </view>
+        <view class="composition-list">
+          <view class="composition-item" wx:if="{{result.composition.baseRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill base" style="width:{{result.composition.baseRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">基本工资</text>
+              <text class="composition-percent">{{result.composition.baseRatio}}%</text>
+            </view>
+          </view>
+          <view class="composition-item" wx:if="{{result.composition.bonusRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill bonus" style="width:{{result.composition.bonusRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">年终奖</text>
+              <text class="composition-percent">{{result.composition.bonusRatio}}%</text>
+            </view>
+          </view>
+          <view class="composition-item" wx:if="{{result.composition.rsuRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill rsu" style="width:{{result.composition.rsuRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">RSU</text>
+              <text class="composition-percent">{{result.composition.rsuRatio}}%</text>
+            </view>
+          </view>
+          <view class="composition-item" wx:if="{{result.composition.socialInsuranceRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill insurance" style="width:{{result.composition.socialInsuranceRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">社保</text>
+              <text class="composition-percent">{{result.composition.socialInsuranceRatio}}%</text>
+            </view>
+          </view>
+          <view class="composition-item" wx:if="{{result.composition.housingFundRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill fund" style="width:{{result.composition.housingFundRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">公积金</text>
+              <text class="composition-percent">{{result.composition.housingFundRatio}}%</text>
+            </view>
+          </view>
+          <view class="composition-item" wx:if="{{result.composition.taxRatio}}">
+            <view class="composition-bar">
+              <view class="bar-fill tax" style="width:{{result.composition.taxRatio}}%"></view>
+            </view>
+            <view class="composition-info">
+              <text class="composition-label">个税</text>
+              <text class="composition-percent">{{result.composition.taxRatio}}%</text>
+            </view>
           </view>
         </view>
       </view>

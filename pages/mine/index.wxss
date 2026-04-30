@@ -116,109 +116,48 @@
 }
 
 .stats-section {
-  display: flex;
-  justify-content: space-around;
   padding: 0 24rpx 24rpx;
+}
+
+.stats-grid {
+  display: flex;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 36rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+  border: 1rpx solid #f0f0f0;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx;
-  background: #ffffff;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
-  border: 1rpx solid #f0f0f0;
+  padding: 0 16rpx;
   flex: 1;
-  margin: 0 8rpx;
   transition: all 0.3s ease;
 }
 
-.stat-item:hover {
-  transform: translateY(-4rpx);
-  box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.08);
-  border-color: #e0e9ff;
+.stat-item:active {
+  transform: scale(0.96);
 }
 
 .stat-value {
-  font-size: 32rpx;
+  font-size: 48rpx;
   font-weight: 700;
   color: #3366ff;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
+  line-height: 1.1;
 }
 
 .stat-label {
-  font-size: 22rpx;
+  font-size: 26rpx;
   color: #666666;
-}
-
-.content-section {
-  padding: 0 24rpx 24rpx;
-}
-
-.section-header {
-  margin-bottom: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.section-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333333;
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
-}
-
-.content-card {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 32rpx 24rpx;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
-  border: 1rpx solid #f0f0f0;
-  transition: all 0.3s ease;
-}
-
-.content-card:hover {
-  transform: translateY(-4rpx);
-  box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.08);
-  border-color: #e0e9ff;
-}
-
-.content-card:active {
-  transform: scale(0.98);
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
-}
-
-.card-icon {
-  font-size: 56rpx;
-  margin-right: 20rpx;
-}
-
-.card-info {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.card-name {
-  font-size: 28rpx;
   font-weight: 500;
-  color: #333333;
-  margin-bottom: 6rpx;
 }
 
-.card-count {
-  font-size: 22rpx;
-  color: #999999;
+.stat-divider {
+  width: 1rpx;
+  background: #f0f0f0;
 }
 
 .action-section {

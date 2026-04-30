@@ -1,14 +1,16 @@
 .container {
-  min-height: 100vh;
+  height: 100vh;
   background: #f8f9fa;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
 }
 
 .content-scroll {
-  min-height: 100vh;
-  padding-bottom: 120rpx;
-  padding-top: 48rpx; /* 增加顶部间距 */
+  height: calc(100vh - env(safe-area-inset-top) - 120rpx);
+  padding-bottom: 280rpx;
+  padding-top: 48rpx;
+  box-sizing: border-box;
 }
 
 .salary-header {
@@ -498,46 +500,10 @@
   font-size: 20rpx;
   color: #999999;
   border-top: 1rpx solid #f0f0f0;
-  margin: 0 16rpx 120rpx;
+  margin: 0 16rpx 20rpx;
   border-radius: 16rpx;
 }
 
-.quick-nav {
-  position: fixed;
-  right: 32rpx;
-  bottom: calc(180rpx + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 96rpx;
-  height: 96rpx;
-  background: linear-gradient(135deg, #3366ff 0%, #5588ff 100%);
-  border-radius: 50%;
-  box-shadow: 0 4rpx 16rpx rgba(51, 102, 255, 0.4);
-  opacity: 0;
-  transform: scale(0.8) translateY(20rpx);
-  transition: all 0.3s ease;
-  z-index: 99;
-}
-
-.quick-nav.show {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-.quick-nav:active {
-  transform: scale(0.95);
-  box-shadow: 0 2rpx 8rpx rgba(51, 102, 255, 0.3);
-}
-
-.quick-nav-icon {
-  font-size: 32rpx;
-  display: block;
-}
-
-.quick-nav-text {
-  font-size: 18rpx;
-  color: #ffffff;
-  margin-top: 2rpx;
+.bottom-spacer {
+  height: 40rpx;
 }

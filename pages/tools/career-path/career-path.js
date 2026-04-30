@@ -28,7 +28,7 @@ Page({
 
   loadPositions() {
     request('/career-path/positions', 'GET').then(res => {
-      const positions = res.data;
+      const positions = res;
       const names = positions.map(p => p.positionName);
       this.setData({
         positions,
@@ -90,11 +90,28 @@ Page({
       currentPositionId,
       targetPositionId,
       planMonths
-    }).then(res => {
+    }).then(data => {
       wx.hideLoading();
-      const data = res.data;
-      const missingSkills = data.skillGap && data.skillGap.missingSkills ? data.skillGap.missingSkills : [];
-      const toImproveSkills = data.skillGap && data.skillGap.toImproveSkills ? data.skillGap.toImproveSkills : [];
+      
+      let missingSkills = [];
+      let toImproveSkills = [];
+      
+      if (data.skillGap) {
+        if (Array.isArray(data.skillGap)) {
+          data.skillGap.forEach(gap => {
+            if (gap.missingSkills && Array.isArray(gap.missingSkills)) {
+              missingSkills = missingSkills.concat(gap.missingSkills);
+            }
+            if (gap.toImproveSkills && Array.isArray(gap.toImproveSkills)) {
+              toImproveSkills = toImproveSkills.concat(gap.toImproveSkills);
+            }
+          });
+        } else if (typeof data.skillGap === 'object') {
+          missingSkills = data.skillGap.missingSkills || [];
+          toImproveSkills = data.skillGap.toImproveSkills || [];
+        }
+      }
+      
       this.setData({ 
         careerPath: data,
         missingSkills,

@@ -146,8 +146,10 @@ Page({
       console.log('上传成功:', data);
       wx.hideLoading();
       const avatarUrl = data.avatarUrl;
+      const fullAvatarUrl = getFullImageUrl(avatarUrl);
       this.setData({
         'formData.avatarUrl': avatarUrl,
+        displayAvatarUrl: fullAvatarUrl,
         uploading: false
       });
       wx.showToast({ title: '上传成功', icon: 'success' });

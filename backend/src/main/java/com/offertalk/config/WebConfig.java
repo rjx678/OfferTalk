@@ -1,6 +1,6 @@
 package com.offertalk.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -12,20 +12,26 @@ import java.io.File;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private UploadConfig uploadConfig;
+    @Value("${app.upload.path:./uploads/}")
+    private String uploadPath;
+    
+    @Value("${app.upload.url-prefix:/api/uploads/}")
+    private String urlPrefix;
     
     private String absoluteUploadPath;
 
     @PostConstruct
     public void init() {
-        // 获取绝对路径
-        File uploadDir = new File(uploadConfig.getPath());
+        File uploadDir = new File(uploadPath);
         this.absoluteUploadPath = uploadDir.getAbsolutePath();
-        // 确保目录存在
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
+        System.out.println("========== 文件上传配置 ==========");
+        System.out.println("上传路径配置: " + uploadPath);
+        System.out.println("上传路径绝对路径: " + absoluteUploadPath);
+        System.out.println("URL前缀: " + urlPrefix);
+        System.out.println("===================================");
     }
 
     @Override
@@ -40,9 +46,19 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 配置文件上传路径的静态资源访问
-        // 使用绝对路径确保正确映射
-        registry.addResourceHandler(uploadConfig.getUrlPrefix() + "**")
-                .addResourceLocations("file:" + absoluteUploadPath + "/");
+        String resourcePath = "file:" + absoluteUploadPath + File.separator;
+        
+        System.out.println("========== 静态资源映射配置 ==========");
+        System.out.println("请求路径: " + urlPrefix + "**");
+        System.out.println("文件路径: " + resourcePath);
+        System.out.println("===================================");
+        
+        registry.addResourceHandler(urlPrefix + "**")
+                .addResourceLocations(resourcePath)
+                .setCachePeriod(3600);
+        
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations(resourcePath)
+                .setCachePeriod(3600);
     }
 }

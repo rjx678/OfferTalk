@@ -195,20 +195,6 @@ public class InterviewExperienceServiceImpl extends ServiceImpl<InterviewExperie
         }
     }
 
-    @Override
-    public List<InterviewExperience> getHotExperiences(Integer limit) {
-        LambdaQueryWrapper<InterviewExperience> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(InterviewExperience::getAuditStatus, Constants.AUDIT_STATUS_PASS)
-                .eq(InterviewExperience::getIsDeleted, Constants.DELETED_NO)
-                .orderByDesc(InterviewExperience::getLikeCount)
-                .orderByDesc(InterviewExperience::getViewCount)
-                .last("LIMIT " + limit);
-
-        List<InterviewExperience> experiences = this.list(wrapper);
-        experiences.forEach(this::addCompanyInfo);
-        return experiences;
-    }
-
     private static class BusinessException extends com.offertalk.common.BusinessException {
         public BusinessException(String message) {
             super(message);

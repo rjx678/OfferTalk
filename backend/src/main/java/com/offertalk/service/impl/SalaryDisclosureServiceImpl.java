@@ -93,7 +93,22 @@ public class SalaryDisclosureServiceImpl extends ServiceImpl<SalaryDisclosureMap
         }
 
         addCompanyInfo(salary);
+        addUserInfo(salary);
         return salary;
+    }
+
+    private void addUserInfo(SalaryDisclosure salary) {
+        if (salary.getUserId() != null) {
+            try {
+                SysUser sysUser = sysUserService.getById(salary.getUserId());
+                if (sysUser != null) {
+                    // 动态添加用户信息
+                    salary.setUserName(sysUser.getNickname());
+                }
+            } catch (Exception e) {
+                // 忽略异常，保持原有逻辑
+            }
+        }
     }
 
     private void addCompanyInfo(SalaryDisclosure salary) {
